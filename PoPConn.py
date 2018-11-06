@@ -173,10 +173,6 @@ def generateGameResult():
     qsort.qsort(convertedNum)
     winner = numToPlayerID[convertedNum[0]]
 
-    # gameResult = []
-    # for playerID in nodeMatchConfig.myMatchPlayerIDs:
-    #     if playerID == winner: gameResult.append(playerResult(playerID, 1))
-    #     else: gameResult.append(playerResult(playerID, 0))
     thisResList = playerResultList([playerResult(playerID, 1) if playerID == winner else playerResult(playerID, 0) for playerID in nodeMatchConfig.myMatchPlayerIDs])
     return thisResList
 
@@ -210,6 +206,7 @@ def consensusOnGameRes():
     winner = pickle.loads(matchResult.gameResFromPlayerID[consensusPlayerID]).getWinner()
     if nodeConfig.myID == winner:
         print("I am the winner {}, broadcasting data...".format(winner))
+        broadcastOnGameRes()
     else:
         print("I am not the winner, the winner is {}".format(winner))
     return
