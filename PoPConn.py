@@ -22,45 +22,45 @@ loop = asyncio.get_event_loop()
 
 # namespace
 class initConfig:
-    myMatchID = args.matchID
-    myPort = 0 # my port for opening connection
+    gameID = args.matchID
+    port = 0 # my port for opening connection
     bootstrapPort = 0 # port of bootstrap node that accept connection
     sock = "" # socket for connect nodes, send ,recv msg
-    myID = "" # my addr ID
+    ID = "" # my addr ID
 
 class keyPair:
     priKey = "" # @type str
     pubKey = "" # @type str
 
-class matchConfig:
-    myMatchPlayerIDs = [] # list of player node id with same game match id
-    matchStarted = False # lock adding players across the global
+class gameConf:
+    gamePlyrs = [] # list of player node id with same game match id
+    gameOn = False # lock adding players across the global
 
-class matchResult:
-    signedResHashFromPlayerID = {} # first key = node id x, second key = known node id from node id x, value = signed game result hash
-    gameResRehashFromPlayerID = {}
-    gameResFromPlayerID = {}
-    pubKFromPlayerID = {}
+class gameRes:
+    plyrsSignRes = {} # first key = node id x, second key = known node id from node id x, value = signed game result hash
+    plyrsResHash = {}
+    plyrsRes = {}
+    plyrsPubK = {}
 
 # object
-class playerResult:
+class plyrRes:
     def __init__(self, playerID, win):
         self.playerID = playerID
         self.win = win
     def __eq__(self, other):
         return self.playerID == other.playerID and self.win == other.win
 
-class playerResultList:
-    def __init__(self, playerResultList):
-        self.playerResultList = playerResultList
+class plyrResList: # = plyrsRes in gameRes
+    def __init__(self, plyrResList):
+        self.plyrResList = plyrResList
     def __eq__(self, other):
-        return self.playerResultList == other.playerResultList
+        return self.plyrResList == other.plyrResList
     def getWinner(self):
-        for playerResult in self.playerResultList:
-            if playerResult.win: return playerResult.playerID
+        for plyrRes in self.plyrResList:
+            if plyrRes.win: return plyrRes.playerID
 
-nodeConfig = initConfig()
-nodeMatchConfig = matchConfig()
+myConf = initConfig()
+myGameConf = gameConf()
 # function
 def genPriKey():
 
@@ -69,51 +69,51 @@ def genPriKey():
     keyPair.pubKey = key.publickey().export_key()
 
 def initNode():
-    global args, nodeConfig
+    global args, myConf
     # args initializing
     if args.bootstrap is None: args.bootstrap = False
     if args.bootstrap: 
-        nodeConfig.myPort = 1000
+        myConf.port = 1000
     elif args.port == 1000: 
         print("invalid port, please use another port")
         sys.exit()
     else:
-        nodeConfig.myPort = args.port
-        nodeConfig.bootstrapPort = 1000
+        myConf.port = args.port
+        myConf.bootstrapPort = 1000
 
     # p2p network setup
     try:
-        nodeConfig.sock = mesh.MeshSocket('0.0.0.0', nodeConfig.myPort)
+        myConf.sock = mesh.MeshSocket('0.0.0.0', myConf.port)
     except OSError:
         print("IP and Port pair has already existed")
         sys.exit()
-    if not args.bootstrap: nodeConfig.sock.connect('127.0.0.1', nodeConfig.bootstrapPort)
-    nodeConfig.myID = nodeConfig.sock.id
-    print("Node "+str(nodeConfig.myID)+" initialized.")
+    if not args.bootstrap: myConf.sock.connect('127.0.0.1', myConf.bootstrapPort)
+    myConf.ID = myConf.sock.id
+    print("Node "+str(myConf.ID)+" initialized.")
     genPriKey()
 
 async def readHandler():
-    global nodeMatchConfig, nodeConfig
+    global myGameConf, myConf
     while True:
-        msg = nodeConfig.sock.recv()
+        msg = myConf.sock.recv()
         if msg is not None:
             decodedMsg = msg.packets[1]
             if "handshaking" in decodedMsg and "matchID" in decodedMsg:
-                if nodeMatchConfig.matchStarted:
+                if myGameConf.gameOn:
                     print("Request player {} joining existing match".format(str(msg.sender)))
-                    msg.reply({"matchStarted": 1})
+                    msg.reply({"gameOn": 1})
                 else:
-                    if decodedMsg["matchID"] == nodeConfig.myMatchID and msg.sender not in nodeMatchConfig.myMatchPlayerIDs: nodeMatchConfig.myMatchPlayerIDs += [msg.sender]
+                    if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: myGameConf.gamePlyrs += [msg.sender]
                     print("Ack new player "+str(msg.sender)+", match ID: "+decodedMsg["matchID"])
-                    msg.reply({"ack": 1, "matchID": nodeConfig.myMatchID})
+                    msg.reply({"ack": 1, "matchID": myConf.gameID})
 
             if "ack" in decodedMsg and "matchID" in decodedMsg:
-                if decodedMsg["matchID"] == nodeConfig.myMatchID and msg.sender not in nodeMatchConfig.myMatchPlayerIDs: nodeMatchConfig.myMatchPlayerIDs += [msg.sender]
+                if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: myGameConf.gamePlyrs += [msg.sender]
                 print("Received Ack from player "+str(msg.sender)+"match ID: "+decodedMsg["matchID"])
 
-            if "matchStarted" in decodedMsg:
-                print("Match ID {} has started the match, trying another match session, ID {}".format(nodeConfig.myMatchID, str(int(nodeConfig.myMatchID)+1)))
-                nodeConfig.myMatchID = int(nodeConfig.myMatchID) + 1
+            if "gameOn" in decodedMsg:
+                print("Match ID {} has started the match, trying another match session, ID {}".format(myConf.gameID, str(int(myConf.gameID)+1)))
+                myConf.gameID = int(myConf.gameID) + 1
 
             if "msg" in decodedMsg:
                 print(decodedMsg["msg"])
@@ -124,18 +124,18 @@ async def readHandler():
                 gameResRehash = pickle.loads(decodedMsg["pickleGameResRehash"])
 
                 print("received signed game result hash from player {}".format(str(msg.sender)[0:10]+"..."))
-                if nodeConfig.myID not in matchResult.signedResHashFromPlayerID: matchResult.signedResHashFromPlayerID[nodeConfig.myID] = {}
-                if nodeConfig.myID not in matchResult.gameResRehashFromPlayerID: matchResult.gameResRehashFromPlayerID[nodeConfig.myID] = {}
-                if msg.sender not in matchResult.signedResHashFromPlayerID: matchResult.signedResHashFromPlayerID[msg.sender] = {}
-                if msg.sender not in matchResult.gameResRehashFromPlayerID: matchResult.gameResRehashFromPlayerID[msg.sender] = {}
+                if myConf.ID not in gameRes.plyrsSignRes: gameRes.plyrsSignRes[myConf.ID] = {}
+                if myConf.ID not in gameRes.plyrsResHash: gameRes.plyrsResHash[myConf.ID] = {}
+                if msg.sender not in gameRes.plyrsSignRes: gameRes.plyrsSignRes[msg.sender] = {}
+                if msg.sender not in gameRes.plyrsResHash: gameRes.plyrsResHash[msg.sender] = {}
 
-                matchResult.signedResHashFromPlayerID[nodeConfig.myID][msg.sender] = signedGameResHash
-                matchResult.gameResRehashFromPlayerID[nodeConfig.myID][msg.sender] = gameResRehash
-                matchResult.signedResHashFromPlayerID[msg.sender][msg.sender] = signedGameResHash
-                matchResult.gameResRehashFromPlayerID[msg.sender][msg.sender] = gameResRehash
-                matchResult.pubKFromPlayerID[msg.sender] = pubKey
+                gameRes.plyrsSignRes[myConf.ID][msg.sender] = signedGameResHash
+                gameRes.plyrsResHash[myConf.ID][msg.sender] = gameResRehash
+                gameRes.plyrsSignRes[msg.sender][msg.sender] = signedGameResHash
+                gameRes.plyrsResHash[msg.sender][msg.sender] = gameResRehash
+                gameRes.plyrsPubK[msg.sender] = pubKey
 
-                nodeConfig.sock.send({"pickleGameResRehash": decodedMsg["pickleGameResRehash"], "exchangeSignedGameResHash": 1, "playerID": msg.sender
+                myConf.sock.send({"pickleGameResRehash": decodedMsg["pickleGameResRehash"], "exchangeSignedGameResHash": 1, "playerID": msg.sender
                 , "pickleSignedGameResHash": decodedMsg["pickleSignedGameResHash"]})
 
             if "exchangeSignedGameResHash" in decodedMsg:
@@ -143,49 +143,49 @@ async def readHandler():
                 gameResRehash = pickle.loads(decodedMsg["pickleGameResRehash"])
 
                 print("received cross-validating signed game result hash of player {} from player {}".format(str(decodedMsg["playerID"])[0:10]+"...", str(msg.sender)[0:10]+"..."))
-                if msg.sender not in matchResult.signedResHashFromPlayerID: matchResult.signedResHashFromPlayerID[msg.sender] = {}
-                if msg.sender not in matchResult.gameResRehashFromPlayerID: matchResult.gameResRehashFromPlayerID[msg.sender] = {}
-                matchResult.signedResHashFromPlayerID[msg.sender][decodedMsg["playerID"]] = signedGameResHash
-                matchResult.gameResRehashFromPlayerID[msg.sender][decodedMsg["playerID"]] = gameResRehash
+                if msg.sender not in gameRes.plyrsSignRes: gameRes.plyrsSignRes[msg.sender] = {}
+                if msg.sender not in gameRes.plyrsResHash: gameRes.plyrsResHash[msg.sender] = {}
+                gameRes.plyrsSignRes[msg.sender][decodedMsg["playerID"]] = signedGameResHash
+                gameRes.plyrsResHash[msg.sender][decodedMsg["playerID"]] = gameResRehash
 
             if "gameRes" in decodedMsg:
                 print("received game res from player "+str(msg.sender)[0:10]+"...")
-                matchResult.gameResFromPlayerID[msg.sender] = decodedMsg["gameRes"]
+                gameRes.plyrsRes[msg.sender] = decodedMsg["gameRes"]
                 
 
         await asyncio.sleep(1)
     return
 
 def directSend(playerID, msg):
-    if playerID not in nodeConfig.sock.routing_table: return playerID
-    receiverNode = nodeConfig.sock.routing_table[playerID]
+    if playerID not in myConf.sock.routing_table: return playerID
+    receiverNode = myConf.sock.routing_table[playerID]
     receiverNode.send(flags.whisper, flags.whisper, msg)
     return
 
 def generateGameResult():
     # player 1 always win, player 1 is the lowest-valued ID defined below
-    global nodeMatchConfig
+    global myGameConf
     numToPlayerID = {}
     convertedNum = []
-    for pid in nodeMatchConfig.myMatchPlayerIDs:
+    for pid in myGameConf.gamePlyrs:
         convertedNum += [sum([ord(i) for i in str(pid)])]
         numToPlayerID[convertedNum[-1]] = pid
     qsort.qsort(convertedNum)
     winner = numToPlayerID[convertedNum[0]]
 
-    thisResList = playerResultList([playerResult(playerID, 1) if playerID == winner else playerResult(playerID, 0) for playerID in nodeMatchConfig.myMatchPlayerIDs])
+    thisResList = plyrResList([plyrRes(playerID, 1) if playerID == winner else plyrRes(playerID, 0) for playerID in myGameConf.gamePlyrs])
     return thisResList
 
 def crossVerifyGameRes():
     # check if every signed is valid
-    for receiverPID in matchResult.pubKFromPlayerID:
-        for senderPID in matchResult.pubKFromPlayerID:
-            gameResHash = SHA256.new(matchResult.gameResFromPlayerID[receiverPID])
-            if gameResHash.hexdigest() != matchResult.gameResRehashFromPlayerID[senderPID][receiverPID].hexdigest():
+    for receiverPID in gameRes.plyrsPubK:
+        for senderPID in gameRes.plyrsPubK:
+            gameResHash = SHA256.new(gameRes.plyrsRes[receiverPID])
+            if gameResHash.hexdigest() != gameRes.plyrsResHash[senderPID][receiverPID].hexdigest():
                 return False
             try:
-                pkcs1_15.new(RSA.import_key(matchResult.pubKFromPlayerID[receiverPID])).verify(
-                    gameResHash, matchResult.signedResHashFromPlayerID[senderPID][receiverPID]
+                pkcs1_15.new(RSA.import_key(gameRes.plyrsPubK[receiverPID])).verify(
+                    gameResHash, gameRes.plyrsSignRes[senderPID][receiverPID]
                 )
             except (ValueError, TypeError):
                 return False
@@ -197,14 +197,14 @@ def broadcastOnGameRes():
 
 def consensusOnGameRes():
     matchConsensus = {}
-    for basePlayerID, baseResList in matchResult.gameResFromPlayerID.items():
-        for playerID, resList in matchResult.gameResFromPlayerID.items():
+    for basePlayerID, baseResList in gameRes.plyrsRes.items():
+        for playerID, resList in gameRes.plyrsRes.items():
             if baseResList == resList:
                 if basePlayerID not in matchConsensus: matchConsensus[basePlayerID] = 1
                 else: matchConsensus[basePlayerID] += 1
     count, consensusPlayerID = max((v, k) for k, v in matchConsensus.items())
-    winner = pickle.loads(matchResult.gameResFromPlayerID[consensusPlayerID]).getWinner()
-    if nodeConfig.myID == winner:
+    winner = pickle.loads(gameRes.plyrsRes[consensusPlayerID]).getWinner()
+    if myConf.ID == winner:
         print("I am the winner {}, broadcasting data...".format(winner))
         broadcastOnGameRes()
     else:
@@ -212,62 +212,62 @@ def consensusOnGameRes():
     return
 
 def broadcastGameHash():
-    global nodeMatchConfig
-    if nodeConfig.myID not in matchResult.signedResHashFromPlayerID: matchResult.signedResHashFromPlayerID[nodeConfig.myID] = {}
-    if nodeConfig.myID not in matchResult.gameResRehashFromPlayerID: matchResult.gameResRehashFromPlayerID[nodeConfig.myID] = {}
+    global myGameConf
+    if myConf.ID not in gameRes.plyrsSignRes: gameRes.plyrsSignRes[myConf.ID] = {}
+    if myConf.ID not in gameRes.plyrsResHash: gameRes.plyrsResHash[myConf.ID] = {}
 
-    matchResult.gameResFromPlayerID[nodeConfig.myID] = pickle.dumps(generateGameResult())
-    gameResRehash = rehash.sha256(matchResult.gameResFromPlayerID[nodeConfig.myID])
-    gameResHash = SHA256.new(matchResult.gameResFromPlayerID[nodeConfig.myID])
+    gameRes.plyrsRes[myConf.ID] = pickle.dumps(generateGameResult())
+    gameResRehash = rehash.sha256(gameRes.plyrsRes[myConf.ID])
+    gameResHash = SHA256.new(gameRes.plyrsRes[myConf.ID])
     signedGameResHash = pkcs1_15.new(RSA.import_key(keyPair.priKey)).sign(gameResHash)
-    matchResult.signedResHashFromPlayerID[nodeConfig.myID][nodeConfig.myID] = signedGameResHash
-    matchResult.gameResRehashFromPlayerID[nodeConfig.myID][nodeConfig.myID] = gameResHash
-    matchResult.pubKFromPlayerID[nodeConfig.myID] = keyPair.pubKey
+    gameRes.plyrsSignRes[myConf.ID][myConf.ID] = signedGameResHash
+    gameRes.plyrsResHash[myConf.ID][myConf.ID] = gameResHash
+    gameRes.plyrsPubK[myConf.ID] = keyPair.pubKey
 
-    nodeConfig.sock.send({"pickleGameResRehash": pickle.dumps(gameResRehash)
+    myConf.sock.send({"pickleGameResRehash": pickle.dumps(gameResRehash)
         , "pickleSignedGameResHash": pickle.dumps(signedGameResHash), "picklePubKey": pickle.dumps(keyPair.pubKey)})
     return
 
 def broadcastGameRes():
-    nodeConfig.sock.send({"gameRes": matchResult.gameResFromPlayerID[nodeConfig.myID]})
+    myConf.sock.send({"gameRes": gameRes.plyrsRes[myConf.ID]})
 
 async def init_match():
-    global nodeConfig, nodeMatchConfig
-    nodeMatchConfig.myMatchPlayerIDs += [nodeConfig.sock.id]
+    global myConf, myGameConf
+    myGameConf.gamePlyrs += [myConf.sock.id]
     while True:
-        if len(nodeMatchConfig.myMatchPlayerIDs) >= 4:
-            print("Match {} has >= 4 players, starting match...".format(nodeConfig.myMatchID))
-            nodeMatchConfig.matchStarted = True
+        if len(myGameConf.gamePlyrs) >= 4:
+            print("Match {} has >= 4 players, starting match...".format(myConf.gameID))
+            myGameConf.gameOn = True
             time.sleep(5)
 
             # shared turn phase 1: broadcast game hash, signedHash and pubKey
             broadcastGameHash()
-            sharedTurnStart = time.time()
+            timerOn = time.time()
             curTime = time.time()
-            while curTime-sharedTurnStart < 60:
-                fullGameResHashExchanged = True
-                for playerID in matchResult.signedResHashFromPlayerID:
-                    if len(matchResult.signedResHashFromPlayerID[playerID]) != len(matchConfig.myMatchPlayerIDs):
-                        fullGameResHashExchanged = False
-                if fullGameResHashExchanged: break
+            while curTime-timerOn < 60:
+                flag = True
+                for playerID in gameRes.plyrsSignRes:
+                    if len(gameRes.plyrsSignRes[playerID]) != len(myGameConf.gamePlyrs):
+                        flag = False
+                if flag: break
                 await asyncio.sleep(1)
                 curTime = time.time()
-            if curTime-sharedTurnStart >= 60: break
+            if curTime-timerOn >= 60: break
 
             # shared turn phase 2: broadcast game res, and verify
             broadcastGameRes()
-            sharedTurnStart = time.time()
+            timerOn = time.time()
             curTime = time.time()
-            while curTime-sharedTurnStart < 60:
-                if len(matchResult.gameResFromPlayerID) == len(matchConfig.myMatchPlayerIDs): break
+            while curTime-timerOn < 60:
+                if len(gameRes.plyrsRes) == len(myGameConf.gamePlyrs): break
                 await asyncio.sleep(1)
                 curTime = time.time()
-            if curTime-sharedTurnStart >= 60: break
+            if curTime-timerOn >= 60: break
             matchVerified = crossVerifyGameRes()
             break
         await asyncio.sleep(1)
     
-    if curTime-sharedTurnStart >= 60:
+    if curTime-timerOn >= 60:
         print("shared turn time out")
     elif not matchVerified:
         print("match verification failed")
@@ -277,11 +277,11 @@ async def init_match():
 
 
 def nodeHandshaking():
-    global nodeConfig
+    global myConf
     if not args.bootstrap:
-        handshakingMsg = {"handshaking": 1, "matchID": nodeConfig.myMatchID}
+        handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID}
         print("Handshaking with mesh network... "+json.dumps(handshakingMsg))
-        nodeConfig.sock.send(handshakingMsg)
+        myConf.sock.send(handshakingMsg)
     try:
         # asyncio.ensure_future(readHandler())
         # loop.run_forever()

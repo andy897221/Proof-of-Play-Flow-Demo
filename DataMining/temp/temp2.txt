@@ -1,0 +1,7 @@
+SELECT m.range_time, avg(m.duration), count(m.duration) as recNum FROM (
+    SELECT duration, case
+    when start_time between 1538438400 and 1538524800 then '1st Oct'
+    else 'rest time' end as range_time
+    from public_matches
+) m
+group by m.range_time

@@ -1,0 +1,10 @@
+86400
+
+MATCHES
+23577803
+
+20530965
+
+For Aug data
+2193925
+Select * from public_matches WHERE lobby_type = 7 and game_mode = 22 and start_time >= 1533081600 and start_time < 1535760000 ORDER BY match_id LIMIT 30000

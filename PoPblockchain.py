@@ -47,3 +47,6 @@ class Blockchain(object):
         pass
 
 
+app = Flask(__name__)
+node_identifier = str(uuid4()).replace('-', '')
+Blockchain = Blockchain()
