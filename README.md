@@ -7,7 +7,7 @@ Internal Consensus of PoP Blockchain
 
 Implementation of the image
 
-![InternalConsensus](img\rating.png)
+![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/rating.png "P2P")
 
 To run a node, use the following command
 
@@ -22,8 +22,8 @@ then initalize any non bootstrap node, where bootstrap node is assumed as port 1
 
 the following image is the demostration of two nodes being connected
 
-![InternalConsensus](/img/exampleRun1.png)
+![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun1.PNG "init")
 
 And the following image is the result of a match
 
-![InternalConsensus](/img/exampleRun2.png)
+![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun2.PNG "consensus")
