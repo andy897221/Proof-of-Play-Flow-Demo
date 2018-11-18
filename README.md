@@ -22,8 +22,8 @@ then initalize any non bootstrap node, where bootstrap node is assumed as port 1
 
 the following image is the demostration of two nodes being connected
 
-![InternalConsensus](img/exampleRun1.png)
+![InternalConsensus](/img/exampleRun1.png)
 
 And the following image is the result of a match
 
-![InternalConsensus](img/exampleRun2.png)
+![InternalConsensus](/img/exampleRun2.png)
