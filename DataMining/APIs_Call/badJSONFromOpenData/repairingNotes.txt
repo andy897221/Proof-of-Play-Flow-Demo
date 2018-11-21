@@ -1,0 +1,6 @@
+matchesDetails.py has been initially written wrongly, has been json.loads() when writing into a str txt, to repair:
+
+>>> f = open('matchDetails - Copy.txt', 'r', encoding='utf-8')
+>>> content = f.read()
+>>> import ast
+>>> repairedContent = ast.literal_eval(content)
