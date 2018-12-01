@@ -1,0 +1,23 @@
+(C:\Users\andy8\Anaconda3) C:\Users\andy8\Desktop\Proof-of-Play\libExamples>python terminateConn.py -b 0 -p 1002
+{b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX': <py2p.mesh.MeshConnection object at 0x000001ED3BAE3948>, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9': <py2p.mesh.MeshConnection object at 0x000001ED3BAE3CA8>}
+msg sent
+1002 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596216, 0, 'hello bootstrap') to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3948>
+1002 Compressing with 19
+1002 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596216, 0, 'hello bootstrap') to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3CA8>
+1002 Compressing with 19
+1002 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596221, 0, 'disconnect') to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3948>
+1002 Compressing with 19
+1002 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596221, 0, 'disconnect') to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3CA8>
+1002 Compressing with 19
+1002 Connection to node b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX' has been closed
+1002 Sending (2, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596222, 8, '*') to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3CA8>
+1002 Compressing with 19
+1002 bytearray(b'\x00\x00\x00xx\x9c\x01m\x00\x92\xff\x8d\xcdm\xd1\xb89\xa2\xd9\xb1S\x15\xe3\x04\xd8q\xaa\xfc\x80\xf6\xc9k\xf7\x05K\xe0"\x15\xea\xb0\xa3|\x89\x95\x01\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xbe\x01\x90\xd1\x86-d') 4 True
+1002 Message received: (1, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', 1543596222, 1, [])
+1002 Compression methods changed to: []
+1002 Sending (1, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596222, 1, ()) to <py2p.mesh.MeshConnection object at 0x000001ED3BAE3CA8>
+1002 bytearray(b'\x00\x00\x00wx\x9c\x01l\x00\x93\xff\x1a\xber\xe1j\x85k\xd95\xcfyLb$d\xfe\xc2b\xbf\x98\xaeu\x17lZ\x9ai=\xb9?\x84\x8f\x94\x01\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xbe\t\xc4\xb0*s') 4 True
+1002 There was an unhandled exception with peer id b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9'. This peer is being disconnected, and the relevant exception is added to the debug queue. If you'd like to report this, please post a copy of your MeshSocket.status to git.p2p.today/issues.
+1002 This exception was: Checksum failed: b'x\x9c\x01l\x00\x93\xff\x1a\xber\xe1j\x85k\xd95\xcfyLb$d\xfe\xc2b\xbf\x98\xaeu\x17lZ' != b'\x92\x9bl\xceLwT\xa8\xa1{\x83<\xaa\xa1\x80S*\xc5R\xf6&\xac\xd2kb\xd4>\x08s5\x11\xf6'
+1002 Connection to node b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9' has been closed
+ending program...

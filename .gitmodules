@@ -1,0 +1,6 @@
+[submodule "blockchain"]
+	path = blockchain
+	url = https://github.com/dvf/blockchain
+[submodule "credits"]
+	path = credits
+	url = https://github.com/dvf/blockchain

@@ -1,0 +1,82 @@
+(PoPpy) C:\Users\andy8\Desktop\Proof-of-Play\libExamples>python terminateConn.py -b 1 -p 1000
+1000 Incoming connection from ('127.0.0.1', 63636)
+1000 Sending (2, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596211, 5, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', b'EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD', ('192.168.0.180', 1000), [19, 17, 16, 18]) to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 bytearray(b'\x00\x00\x00\xf5$\x9b*\xa6\xc2$o"\x7f\xb9r\xfc\x18\xb30B\xe3j\x11\n\x91l\xe2\xf1\xd4K\x00\xd2i\xd1\x0e\xb4\x98\x02\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xb3\x05\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xc4,EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD\x92\xad192.168.0.180\xcd\x03\xe9\x94\x13\x11\x10\x12') 4 True
+1000 Message received: (2, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', 1543596211, 5, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', b'EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD', ['192.168.0.180', 1001], [19, 17, 16, 18])
+1000 Checking handler: __handle_handshake
+1000 Compression methods changed to [19, 17, 16, 18]
+1000 Sending (2, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596211, 7, [(['192.168.0.180', 1001], b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9')]) to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 Compressing with 19
+1000 Breaking from handler: __handle_handshake
+1000 bytearray(b'\x00\x00\x00\xcfx\x9c\x01\xc4\x00;\xff\x1e\xb2\xd4I\xd6\xabR\xcb0\x98o\xc0\xd12\x05@\xdc\xdcB\xca\xa5\xf0\x7f)\x81\x0el\xa4L\x8c\xa1\xf0\x95\x02\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xb3\x07\x91\x92\x92\xad192.168.0.180\xcd\x03\xe8\xc4BAAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLXT\x8dI\xdc') 4 True
+1000 Message received: (2, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', 1543596211, 7, [[['192.168.0.180', 1000], b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX']])
+1000 Checking handler: __handle_handshake
+1000 Checking handler: _handle_peers
+1000 Attempting connection to 192.168.0.180:1000 with id b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX'
+1000 Connection already established
+1000 Breaking from handler: _handle_peers
+1000 bytearray(b'\x00\x00\x00\x87x\x9c\x01|\x00\x83\xff\x06\x0c\x8fq\xc9\x07\x02\xb5!\xdc\x18G:\x88Z\xd7\xc1\xf6\xcf\xb8m\xa2$\xdb\xc1\xf0\xb7G\xc3\xfd\x1eU\x95\x00\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xb4\x00\xafhello bootstrap\x98\xfb1b') 4 True
+1000 Message received: (0, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', 1543596212, 0, 'hello bootstrap')
+1000 New waterfall received. Proceeding as normal
+1000 Checking handler: __handle_handshake
+1000 Checking handler: _handle_peers
+1000 Checking handler: __handle_response
+1000 Checking handler: __handle_request
+hi from b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9'
+1000 Incoming connection from ('127.0.0.1', 63639)
+1000 Sending (2, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596215, 5, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', b'EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD', ('192.168.0.180', 1000), [19, 17, 16, 18]) to <py2p.mesh.MeshConnection object at 0x0000017A56636F78>
+1000 bytearray(b'\x00\x00\x00\xf5]I\x9f#\x96\\\x04\xfd\x9c\x84\xcb\x0c\xf5\x18\xd9No4\\\x16"<@\x93F,d,\xb4\x07_\x95\x98\x02\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xb7\x05\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xc4,EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD\x92\xad192.168.0.180\xcd\x03\xea\x94\x13\x11\x10\x12') 4 True
+1000 Message received: (2, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596215, 5, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', b'EpAmyZWv9rZUKmjQgU3FTUD4GrJHvVEXizmghVBc8eGD', ['192.168.0.180', 1002], [19, 17, 16, 18])
+1000 Checking handler: __handle_handshake
+1000 Compression methods changed to [19, 17, 16, 18]
+1000 Sending (2, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596215, 7, [(['192.168.0.180', 1001], b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9'), (['192.168.0.180', 1002], b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf')]) to <py2p.mesh.MeshConnection object at 0x0000017A56636F78>
+1000 Compressing with 19
+1000 Breaking from handler: __handle_handshake
+1000 bytearray(b'\x00\x00\x00\xcfx\x9c\x01\xc4\x00;\xff\x0cD\x7f\xb1\x91d\x80\xa1\x08K\xdd\xf0\xd5\x14\xd1dr\x89Ks\x1a\xbf3\x18\xc9\xac?\xe7\x13\xdf\x9a\xbc\x95\x02\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xb7\x07\x91\x92\x92\xad192.168.0.180\xcd\x03\xe8\xc4BAAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX\xd7(Iy') 4 True
+1000 Message received: (2, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596215, 7, [[['192.168.0.180', 1000], b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX']])
+1000 Checking handler: __handle_handshake
+1000 Checking handler: _handle_peers
+1000 Attempting connection to 192.168.0.180:1000 with id b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX'
+1000 Connection already established
+1000 Breaking from handler: _handle_peers
+1000 bytearray(b"\x00\x00\x00\x87x\x9c\x01|\x00\x83\xff\xe5\xc7~=\'u\x93\xb9\xc0\x92\x076\xa9\x82\t\xc9(\xb9M\xb4\xa8\x7f\xf3\x0fac\xf4\xfb\x80\x9e\n$\x95\x00\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xb8\x00\xafhello bootstrap\xdc\x182\r") 4 True
+1000 Message received: (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596216, 0, 'hello bootstrap')
+1000 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596216, 0, 'hello bootstrap') to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 Compressing with 19
+1000 New waterfall received. Proceeding as normal
+1000 Checking handler: __handle_handshake
+1000 Checking handler: _handle_peers
+1000 Checking handler: __handle_response
+1000 Checking handler: __handle_request
+1000 bytearray(b"\x00\x00\x00\x87x\x9c\x01|\x00\x83\xff\xe5\xc7~=\'u\x93\xb9\xc0\x92\x076\xa9\x82\t\xc9(\xb9M\xb4\xa8\x7f\xf3\x0fac\xf4\xfb\x80\x9e\n$\x95\x00\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xb8\x00\xafhello bootstrap\xdc\x182\r") 4 True
+1000 Message received: (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596216, 0, 'hello bootstrap')
+1000 Not rebroadcasting
+1000 Waterfall already captured
+hi from b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf'
+1000 bytearray(b'\x00\x00\x00\x82x\x9c\x01w\x00\x88\xff\xdc\xf8\x84\x87\x82Q\xfb\xda\xd5\xba\x1aj\xa8\x16J\x9c\xea)\xe0\x82\xa9\xce\xf7~C;fjZE\xff\x17\x95\x00\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xbd\x00\xaadisconnect\xaeN1\xe2') 4 True
+1000 Message received: (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596221, 0, 'disconnect')
+1000 Sending (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596221, 0, 'disconnect') to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 Compressing with 19
+1000 New waterfall received. Proceeding as normal
+1000 Checking handler: __handle_handshake
+1000 Checking handler: _handle_peers
+1000 Checking handler: __handle_response
+1000 Checking handler: __handle_request
+1000 bytearray(b'\x00\x00\x00\x82x\x9c\x01w\x00\x88\xff\xdc\xf8\x84\x87\x82Q\xfb\xda\xd5\xba\x1aj\xa8\x16J\x9c\xea)\xe0\x82\xa9\xce\xf7~C;fjZE\xff\x17\x95\x00\xc4B7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf\xce\\\x01h\xbd\x00\xaadisconnect\xaeN1\xe2') 4 True
+1000 Message received: (0, b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf', 1543596221, 0, 'disconnect')
+1000 Not rebroadcasting
+1000 Waterfall already captured
+1000 Connection to node b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf' has been closed
+b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf' left
+1000 Node b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf' has disconnected from the network
+1000 Connection to node b'7RLKkXfzasVewM7oXvdurfZYhGZmj6W3hRQjWUwQxLQqSCk2iPeGYAcCfQksApGPhf' has been closed
+1000 Sending (2, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596222, 8, '*') to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 Compressing with 19
+1000 bytearray(b'\x00\x00\x00xx\x9c\x01m\x00\x92\xff\x8d\xcdm\xd1\xb89\xa2\xd9\xb1S\x15\xe3\x04\xd8q\xaa\xfc\x80\xf6\xc9k\xf7\x05K\xe0"\x15\xea\xb0\xa3|\x89\x95\x01\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xbe\x01\x90\xd1\x86-d') 4 True
+1000 Message received: (1, b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9', 1543596222, 1, [])
+1000 Compression methods changed to: []
+1000 Sending (1, b'AAnTxtN3zyhYraRNSN5JMZPEfMMgD6NtAZyrJjWTpcfHGRYUksFAfWGpEUoTPKvYLX', 1543596222, 1, ()) to <py2p.mesh.MeshConnection object at 0x0000017A566175E8>
+1000 bytearray(b'\x00\x00\x00wx\x9c\x01l\x00\x93\xff\x1a\xber\xe1j\x85k\xd95\xcfyLb$d\xfe\xc2b\xbf\x98\xaeu\x17lZ\x9ai=\xb9?\x84\x8f\x94\x01\xc4B5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9\xce\\\x01h\xbe\t\xc4\xb0*s') 4 True
+1000 There was an unhandled exception with peer id b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9'. This peer is being disconnected, and the relevant exception is added to the debug queue. If you'd like to report this, please post a copy of your MeshSocket.status to git.p2p.today/issues.
+1000 This exception was: Checksum failed: b'x\x9c\x01l\x00\x93\xff\x1a\xber\xe1j\x85k\xd95\xcfyLb$d\xfe\xc2b\xbf\x98\xaeu\x17lZ' != b'\x92\x9bl\xceLwT\xa8\xa1{\x83<\xaa\xa1\x80S*\xc5R\xf6&\xac\xd2kb\xd4>\x08s5\x11\xf6'
+1000 Connection to node b'5b8RHfDyHWGuw8cuZfzNBvnKsvh1cCs48WsxLi3X71HmcJbYxyHiibbi8NPRJBoYF9' has been closed

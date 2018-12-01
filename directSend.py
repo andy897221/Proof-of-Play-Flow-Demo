@@ -1,3 +1,9 @@
+def directSend(playerID, msg):
+    if playerID not in myConf.sock.routing_table: return playerID
+    receiverNode = myConf.sock.routing_table[playerID]
+    receiverNode.send(flags.whisper, flags.whisper, msg)
+    return
+
 async def _testDirectSend():
     global nodeMatchConfig 
     while True:

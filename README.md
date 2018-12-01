@@ -27,3 +27,9 @@ the following image is the demostration of two nodes being connected
 And the following image is the result of a match
 
 ![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun2.PNG "consensus")
+
+## Problem
+
+py2p is buggy, there is no safe disconnect for a single node, so for Internal Consensus, no disconnecting features
+
+py2p is not used for blockchain codes

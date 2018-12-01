@@ -1,0 +1,12 @@
+(PoPpy) C:\Users\andy8\Desktop\Proof-of-Play\libExamples>python terminateConn.py -b 0 -p 1002
+{b'84BaTqrnEUdUm9sSqFit4P8WpR2sf2bWsCTdYJjUevnExSwUUDmtros6WiBZkhnukK': <py2p.mesh.MeshConnection object at 0x0000026335412D38>, b'3UwhGwpNMwPDe7bpEdWhMWrEoL4HqDfKdfkx1VPBjeYmdsa7drkUpMAHMC65iP2BmE': <py2p.mesh.MeshConnection object at 0x0000026335416DC8>}
+msg sent
+1002 Sending (0, b'AKg6cKBJwf87dpYwV7WiuCAk3cXcBZnr7AryYo7bP8yZn61n23gVctMidFLEB4exJY', 1543600401, 0, 'hello bootstrap') to <py2p.mesh.MeshConnection object at 0x0000026335412D38>
+1002 Compressing with 19
+1002 Sending (0, b'AKg6cKBJwf87dpYwV7WiuCAk3cXcBZnr7AryYo7bP8yZn61n23gVctMidFLEB4exJY', 1543600401, 0, 'hello bootstrap') to <py2p.mesh.MeshConnection object at 0x0000026335416DC8>
+1002 Compressing with 19
+1002 Connection to node b'84BaTqrnEUdUm9sSqFit4P8WpR2sf2bWsCTdYJjUevnExSwUUDmtros6WiBZkhnukK' has been closed
+1002 Connection to node b'3UwhGwpNMwPDe7bpEdWhMWrEoL4HqDfKdfkx1VPBjeYmdsa7drkUpMAHMC65iP2BmE' has been closed
+1002 Node b'84BaTqrnEUdUm9sSqFit4P8WpR2sf2bWsCTdYJjUevnExSwUUDmtros6WiBZkhnukK' has disconnected from the network
+1002 Connection to node b'84BaTqrnEUdUm9sSqFit4P8WpR2sf2bWsCTdYJjUevnExSwUUDmtros6WiBZkhnukK' has been closed
+ending program...

@@ -13,8 +13,7 @@ import time, argparse, asyncio, sys, json, random, os, pickle, base64
 parser = argparse.ArgumentParser()
 parser.add_argument("-m", "--matchID", type=str, help="the match ID to join for this player (node)")
 parser.add_argument("-p", "--port", type=int, help="the opening port number for p2p connection")
-parser.add_argument("-b", "--bootstrap", type=bool, help="whether this node is a bootstrap node")
-parser.add_argument("-c", "--connect", type=int, help=" ")
+parser.add_argument("-b", "--bootstrap", type=int, help="whether this node is a bootstrap node")
 args = parser.parse_args()
 
 # concurrency handler
@@ -88,6 +87,7 @@ def initNode():
         print("IP and Port pair has already existed")
         sys.exit()
     if not args.bootstrap: myConf.sock.connect('127.0.0.1', myConf.bootstrapPort)
+    time.sleep(1)
     myConf.ID = myConf.sock.id
     print("Node "+str(myConf.ID)+" initialized.")
     genPriKey()
@@ -198,7 +198,7 @@ def broadcastOnGameRes():
 def consensusOnGameRes():
     matchConsensus = {}
     for basePlayerID, baseResList in gameRes.plyrsRes.items():
-        for playerID, resList in gameRes.plyrsRes.items():
+        for dump, resList in gameRes.plyrsRes.items():
             if baseResList == resList:
                 if basePlayerID not in matchConsensus: matchConsensus[basePlayerID] = 1
                 else: matchConsensus[basePlayerID] += 1

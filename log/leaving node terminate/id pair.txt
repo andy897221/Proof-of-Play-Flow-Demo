@@ -1,0 +1,3 @@
+AKg6cKBJwf87dpYwV7WiuCAk3cXcBZnr7AryYo7bP8yZn61n23gVctMidFLEB4exJY = node 2 (terminating node)
+84BaTqrnEUdUm9sSqFit4P8WpR2sf2bWsCTdYJjUevnExSwUUDmtros6WiBZkhnukK = bootstrap node
+3UwhGwpNMwPDe7bpEdWhMWrEoL4HqDfKdfkx1VPBjeYmdsa7drkUpMAHMC65iP2BmE = node 1
