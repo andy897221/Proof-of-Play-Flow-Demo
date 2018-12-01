@@ -4,3 +4,6 @@
 [submodule "credits"]
 	path = credits
 	url = https://github.com/dvf/blockchain
+[submodule "blockchain_examples"]
+	path = blockchain_examples
+	url = https://github.com/dvf/blockchain
