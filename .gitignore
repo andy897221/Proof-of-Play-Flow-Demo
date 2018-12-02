@@ -1,5 +1,5 @@
-myNotes
-libExamples
-.vscode
-__pycache__
+myNotes/
+libExamples/
+.vscode/
+__pycache__/
 .ipynb_checkpoints
