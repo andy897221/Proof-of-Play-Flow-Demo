@@ -11,8 +11,7 @@ import time, argparse, asyncio, sys, json, random, os, pickle, base64
 
 # script argument parsing
 parser = argparse.ArgumentParser()
-parser.add_argument("-m", "--matchID", type=str, help="the match filel name to join for this player (node)")
-parser.add_argument("-i", "--nodeID", type=int, help="the given node ID")
+parser.add_argument("-m", "--matchID", type=str, help="the match ID to join for this player (node)")
 parser.add_argument("-p", "--port", type=int, help="the opening port number for p2p connection")
 parser.add_argument("-b", "--bootstrap", type=int, help="whether this node is a bootstrap node")
 args = parser.parse_args()
@@ -27,15 +26,13 @@ class initConfig:
     bootstrapPort = 0 # port of bootstrap node that accept connection
     sock = "" # socket for connect nodes, send ,recv msg
     ID = "" # my addr ID
-    nodeID = args.nodeID
 
 class keyPair:
     priKey = "" # @type str
     pubKey = "" # @type str
 
 class gameConf:
-    gamePlyrs = [] # list of player p2p node id with same game match id
-    gamePlyrsNode = [] # list of player node id with same game match id
+    gamePlyrs = [] # list of player node id with same game match id
     gameOn = False # lock adding players across the global
 
 class gameRes:
@@ -60,13 +57,12 @@ class plyrResList: # = plyrsRes in gameRes
             if plyrRes.win: return plyrRes.playerID
 
 class plyrResList_new:
-    def __init__(self, matchData, radiantWins, MVP):
+    def __init__(self, matchData, MVP):
         # matchData = [{gold_pm, xp_pm, kills_pm, lastHit_pm, heroDmg_pm, heroHealing_pm, towerDmg, stuns_pm, isRadiant}, {}, ... ,{}]
         self.matchData = matchData
-        self.radiantWins = radiantWins
-        self.MVP, self.MVPType = self.getMVP(self.matchData, self.radiantWins)
+        self.MVP, self.MVPType = self.getMVP(self.matchData)
 
-    def getMVP(self, matchData, radiantWins):
+    def getMVP(self, matchData):
         # use highest parameter based total parameter values of all players
         enum = ["gold_pm", "xp_pm", "kills_pm", "lastHit_pm", "heroDmg_pm", "heroHealing_pm", "towerDmg", "stuns_pm"]
         plyrRating, ratingBase = {"param": [], "rating": []}, []
@@ -80,31 +76,16 @@ class plyrResList_new:
             plyrallParam = [(matchData[i][j] / ratingBase) for j in enum]
             plyrRating["param"] += enum[np.argmax(plyrallParam)]
             plyrRating["rating"] += max(plyrallParam)
-        plyrRating["rating"] = np.asarray(plyrRating["rating"])
-
-        plyrWins = [matchData[i]["isRadiant"] for i in matchData]
-        return np.argmax(plyrRating["rating"][plyrWins]), plyrRating["param"][np.argmax(plyrRating["rating"][plyrWins])]
+        return np.argmax(plyrRating["rating"]), plyrRating["param"][np.argmax(plyrRating["Rating"])]
 
 myConf = initConfig()
 myGameConf = gameConf()
 # function
-def init_keyPair():
-    if not os.path.isfile(f"{args.nodeID}.pubKey") or not os.path.isfile(f"{args.nodeID}.pubKey"):
-        print("no key pair found, generating new private and public key for node ID.")
-        key = RSA.generate(2048)
-        keyPair.priKey = key.export_key()
-        keyPair.pubKey = key.publickey().export_key()
-        with open(f"{args.nodeID}.pubKey", "wb") as pubKeyF:
-            pubKeyF.write(key.publickey().export_key())
-        with open(f"{args.nodeID}.priKey", "wb") as priKeyF:
-            priKeyF.write(key.export_key())
-    else:
-        print("key pair found, reading existing private and public key for node ID.")
-        with open(f"{args.nodeID}.pubKey", "rb") as pubKeyF:
-            keyPair.pubKey = pubKeyF.read()
-        with open(f"{args.nodeID}.priKey", "rb") as priKeyF:
-            keyPair.priKey = priKeyF.read()
-    return
+def genPriKey():
+
+    key = RSA.generate(2048)
+    keyPair.priKey = key.export_key()
+    keyPair.pubKey = key.publickey().export_key()
 
 def initNode():
     global args, myConf
@@ -129,7 +110,7 @@ def initNode():
     time.sleep(1)
     myConf.ID = myConf.sock.id
     print("Node "+str(myConf.ID)+" initialized.")
-    init_keyPair()
+    genPriKey()
 
 async def readHandler():
     global myGameConf, myConf
@@ -137,26 +118,25 @@ async def readHandler():
         msg = myConf.sock.recv()
         if msg is not None:
             decodedMsg = msg.packets[1]
-            if "handshaking" in decodedMsg and "matchID" in decodedMsg and "nodeID" in decodedMsg:
+            if "handshaking" in decodedMsg and "matchID" in decodedMsg:
                 if myGameConf.gameOn:
                     print("Request player {} joining existing match".format(str(msg.sender)))
                     msg.reply({"gameOn": 1})
                 else:
-                    if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: 
-                        myGameConf.gamePlyrs += [msg.sender]
-                        myGameConf.gamePlyrsNode += [decodedMsg["nodeID"]]
+                    if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: myGameConf.gamePlyrs += [msg.sender]
                     print("Ack new player "+str(msg.sender)+", match ID: "+decodedMsg["matchID"])
-                    msg.reply({"ack": 1, "matchID": myConf.gameID, "nodeID": myConf.nodeID})
+                    msg.reply({"ack": 1, "matchID": myConf.gameID})
 
-            if "ack" in decodedMsg and "matchID" in decodedMsg and "nodeID" in decodedMsg:
-                if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: 
-                    myGameConf.gamePlyrs += [msg.sender]
-                    myGameConf.gamePlyrsNode += [decodedMsg["nodeID"]]
+            if "ack" in decodedMsg and "matchID" in decodedMsg:
+                if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: myGameConf.gamePlyrs += [msg.sender]
                 print("Received Ack from player "+str(msg.sender)+"match ID: "+decodedMsg["matchID"])
 
             if "gameOn" in decodedMsg:
                 print("Match ID {} has started the match, trying another match session, ID {}".format(myConf.gameID, str(int(myConf.gameID)+1)))
                 myConf.gameID = int(myConf.gameID) + 1
+
+            if "msg" in decodedMsg:
+                print(decodedMsg["msg"])
 
             if "pickleSignedGameResHash" in decodedMsg and "exchangeSignedGameResHash" not in decodedMsg:
                 pubKey = pickle.loads(decodedMsg["picklePubKey"])
@@ -191,9 +171,6 @@ async def readHandler():
             if "gameRes" in decodedMsg:
                 print("received game res from player "+str(msg.sender)[0:10]+"...")
                 gameRes.plyrsRes[msg.sender] = decodedMsg["gameRes"]
-
-            if "msg" in decodedMsg:
-                print(decodedMsg["msg"])
                 
 
         await asyncio.sleep(1)
@@ -218,12 +195,6 @@ def generateGameResult():
 
     thisResList = plyrResList([plyrRes(playerID, 1) if playerID == winner else plyrRes(playerID, 0) for playerID in myGameConf.gamePlyrs])
     return thisResList
-
-def importGameResult():
-    with open(f"parsedMatches/{myConf.gameID}", "r") as f:
-        content = f.read()
-    thisResList = plyrResList_new({})
-    return
 
 def crossVerifyGameRes():
     # check if every signed is valid
@@ -284,8 +255,8 @@ async def init_match():
     global myConf, myGameConf
     myGameConf.gamePlyrs += [myConf.sock.id]
     while True:
-        if len(myGameConf.gamePlyrs) == 10:
-            print("Match {} has 10 players, starting match...".format(myConf.gameID))
+        if len(myGameConf.gamePlyrs) == 4:
+            print("Match {} has 4 players, starting match...".format(myConf.gameID))
             myGameConf.gameOn = True
             time.sleep(5)
 
@@ -328,7 +299,7 @@ async def init_match():
 def nodeHandshaking():
     global myConf
     if not args.bootstrap:
-        handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID, "nodeID": myConf.nodeID}
+        handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID}
         print("Handshaking with mesh network... "+json.dumps(handshakingMsg))
         myConf.sock.send(handshakingMsg)
     try:
@@ -344,5 +315,5 @@ def nodeHandshaking():
     return
 
 initNode()
-time.sleep(100)
+time.sleep(1)
 nodeHandshaking()

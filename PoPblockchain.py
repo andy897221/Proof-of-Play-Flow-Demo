@@ -2,6 +2,7 @@ import hashlib
 import json
 from time import time
 import time
+import os
 from urllib.parse import urlparse
 from uuid import uuid4
 from multiprocessing import Process
@@ -12,6 +13,7 @@ from flask import Flask, jsonify, request
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstrap node")
+parser.add_argument("-i", "--nodeID", type=int, help="the id of a node")
 args = parser.parse_args()
 
 class Blockchain:
@@ -23,8 +25,7 @@ class Blockchain:
         self.nodes = set()
 
     def register_node(self, address):
-        parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
+        self.nodes.add(address)
 
     def proof_of_play(self, all_current_matches):
         # get best match (all data is highest) as seed
@@ -118,13 +119,20 @@ class Blockchain:
 
 
 
-myPort = 9999
-bootstrapNode = args.bootstrapIP
+myPort = 9000
+if args.bootstrapIP is not None: bootstrapNode = args.bootstrapIP
+else: bootstrapNode = None
 app = Flask(__name__)
 node_identifier = str(uuid4()).replace('-', '')
+
+class config:
+    knownNodesFile = f"knownNodes{args.nodeID}.appData"
+
+
+
+######### blockchain host ###########
+
 blockchain = Blockchain()
-
-
 @app.route('/status', methods=['GET'])
 def return_status():
     return json.dumps({'status': 'ok'}), 200
@@ -150,18 +158,17 @@ def full_chain():
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
-    content = request.get_json()
-    nodes = content.get('nodes')
+    content = json.loads(request.data)
+    nodes = content["nodes"]
     if nodes is None:
         return "Error: Please supply a valid list of nodes", 400
     for node in nodes:
         blockchain.register_node(node)
 
-    knownNode = open('knownNodes.appData', 'w')
-    serialize_node = ""
-    for node in blockchain.nodes: serialize_node += f"{node} "
-    knownNode.write(serialize_node[:-1])
-    knownNode.close()
+    with open(config.knownNodesFile, 'w') as knownNode:
+        serialize_node = ""
+        for node in blockchain.nodes: serialize_node += f"{node} "
+        knownNode.write(serialize_node[:-1])
 
     response = {
         'message': 'New nodes have been added',
@@ -171,7 +178,9 @@ def register_nodes():
 
 @app.route('/nodes/retrieve', methods=['GET'])
 def return_nodes():
-    return json.dumps({"nodes", list(blockchain.nodes)}), 200
+    print(blockchain.nodes)
+    print(list(blockchain.nodes))
+    return json.dumps({"nodes": list(blockchain.nodes)}), 200
 
 @app.route('/nodes/resolve', methods=['GET'])
 def consensus():
@@ -188,37 +197,39 @@ def consensus():
         }
     return json.dumps(response), 200
 
-def run_server():
-    app.run(host='0.0.0.0', port=myPort)
 
-def proof_of_play():
+########### blockchain init #############
+def load_nodes():    
+    if os.path.isfile(config.knownNodesFile):
+        with open(config.knownNodesFile, 'r') as content:
+            addrs = content.read().split(" ")
+            for addr in addrs: blockchain.nodes.add(addr)
+        print(f"nodes {str(addrs)} has been added.")
+    else:
+        print("no known nodes needed to be added.")
+
+    if bootstrapNode is not None:
+        content = requests.get(f'http://{bootstrapNode}/nodes/retrieve').text
+        requested_nodes = json.loads(content)['nodes']
+        for addr in requested_nodes: blockchain.nodes.add(addr)
+        print(f"nodes {str(requested_nodes)} has been added from bootstrap node.")
     return
 
-def load_nodes():
-    curStatusCode = requests.codes.im_a_teapot
-    while curStatusCode != requests.codes.ok:
-        try:
-            curStatusCode = requests.get(f'127.0.0.1:{myPort}/status').status_code
-        except Exception:
-            pass
-        time.sleep(1)
-    with open('knownNodes.appData', 'r') as content:
-        for addr in content.read().split(" "): blockchain.nodes.add(addr)
-    print(f"nodes {blockchain.nodes} has been added.")
-    requested_nodes = json.loads(requests.get(bootstrapNode).text)['nodes']
-    curStatusCode = requests.codes.im_a_teapot
-    while curStatusCode != requests.codes.created:
-        try:
-            curStatusCode = request.post(f'127.0.0.1{myPort}/register_nodes',
-                data = {'nodes': requested_nodes})
-        except Exception:
-            pass
-        time.sleep(1)
+def setup_app(app):
+    load_nodes()
+    return
+
+def run_server():
+    setup_app(app)
+    app.run(host='0.0.0.0', port=myPort)
+
+
+def proof_of_play():
+    
     return
 
 def main():
     Process(target=run_server, args=()).start()
-    Process(target=load_nodes, args=()).start()
     Process(target=proof_of_play, args=()).start()
 
 if __name__ == "__main__":
