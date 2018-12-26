@@ -8,6 +8,7 @@ import qsort
 import numpy as np
 import rehash
 import time, argparse, asyncio, sys, json, random, os, pickle, base64
+import requests
 
 # script argument parsing
 parser = argparse.ArgumentParser()
@@ -15,6 +16,7 @@ parser.add_argument("-m", "--matchID", type=str, help="the match filel name to j
 parser.add_argument("-i", "--nodeID", type=int, help="the given node ID")
 parser.add_argument("-p", "--port", type=int, help="the opening port number for p2p connection")
 parser.add_argument("-b", "--bootstrap", type=int, help="whether this node is a bootstrap node")
+parser.add_argument("-a", "--blockchain_addr", type=str, help="the address of the blockchain")
 args = parser.parse_args()
 
 # concurrency handler
@@ -35,8 +37,8 @@ class keyPair:
 
 class gameConf:
     gamePlyrs = [] # list of player p2p node id with same game match id
-    gamePlyrsNode = [] # list of player node id with same game match id
     gameOn = False # lock adding players across the global
+    matchCompleted = False
 
 class gameRes:
     plyrsSignRes = {} # first key = node id x, second key = known node id from node id x, value = signed game result hash
@@ -60,30 +62,38 @@ class plyrResList: # = plyrsRes in gameRes
             if plyrRes.win: return plyrRes.playerID
 
 class plyrResList_new:
-    def __init__(self, matchData, radiantWins, MVP):
-        # matchData = [{gold_pm, xp_pm, kills_pm, lastHit_pm, heroDmg_pm, heroHealing_pm, towerDmg, stuns_pm, isRadiant}, {}, ... ,{}]
+    def __init__(self, matchData, radiantWins):
+        # matchData = [{"gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min", "isRadiant"}, {}, ... ,{}]
         self.matchData = matchData
         self.radiantWins = radiantWins
         self.MVP, self.MVPType = self.getMVP(self.matchData, self.radiantWins)
 
+    def __eq__(self, other):
+        return self.matchData == other.matchData and self.radiantWins == other.radiantWins and self.MVP == other.MVP and self.MVPType == other.MVPType
+
     def getMVP(self, matchData, radiantWins):
         # use highest parameter based total parameter values of all players
-        enum = ["gold_pm", "xp_pm", "kills_pm", "lastHit_pm", "heroDmg_pm", "heroHealing_pm", "towerDmg", "stuns_pm"]
+        enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
         plyrRating, ratingBase = {"param": [], "rating": []}, []
 
         for i in range(0, len(matchData)):
-            for j in enum:
-                if i == 0: ratingBase.append(matchData[i][j])
-                else: ratingBase[j] += matchData[i][j]
+            ratingBase = [matchData[i][j] for j in enum]
         
         for i in range(0, len(matchData)):
-            plyrallParam = [(matchData[i][j] / ratingBase) for j in enum]
-            plyrRating["param"] += enum[np.argmax(plyrallParam)]
-            plyrRating["rating"] += max(plyrallParam)
+            plyrallParam = [(matchData[i][enum[j]] / ratingBase[j]) if ratingBase[j] != 0 else 0 for j in range(0, len(enum))]
+            plyrRating["param"] += [enum[np.argmax(plyrallParam)]]
+            plyrRating["rating"] += [max(plyrallParam)]
         plyrRating["rating"] = np.asarray(plyrRating["rating"])
 
-        plyrWins = [matchData[i]["isRadiant"] for i in matchData]
-        return np.argmax(plyrRating["rating"][plyrWins]), plyrRating["param"][np.argmax(plyrRating["rating"][plyrWins])]
+        plyrWins = np.asarray([matchData[i]["isRadiant"] for i in range(0, len(matchData))])
+        return int(np.argmax(plyrRating["rating"][plyrWins])), plyrRating["param"][np.argmax(plyrRating["rating"][plyrWins])]
+
+    def returnMVP(self):
+        return gameConf.gamePlyrs[self.MVP]
+
+    def returnDict(self):
+        data = {"matchData": self.matchData, "radiantWins": self.radiantWins, "MVP": self.MVP, "MVPType": self.MVPType}
+        return data
 
 myConf = initConfig()
 myGameConf = gameConf()
@@ -134,24 +144,28 @@ def initNode():
 async def readHandler():
     global myGameConf, myConf
     while True:
+        if myGameConf.matchCompleted: break
+
         msg = myConf.sock.recv()
         if msg is not None:
             decodedMsg = msg.packets[1]
-            if "handshaking" in decodedMsg and "matchID" in decodedMsg and "nodeID" in decodedMsg:
+            if "handshaking" in decodedMsg and "matchID" in decodedMsg and "pubKey" in decodedMsg:
                 if myGameConf.gameOn:
                     print("Request player {} joining existing match".format(str(msg.sender)))
                     msg.reply({"gameOn": 1})
                 else:
                     if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: 
+                        pubKey = pickle.loads(decodedMsg["pubKey"])
                         myGameConf.gamePlyrs += [msg.sender]
-                        myGameConf.gamePlyrsNode += [decodedMsg["nodeID"]]
+                        gameRes.plyrsPubK[msg.sender] = pubKey
                     print("Ack new player "+str(msg.sender)+", match ID: "+decodedMsg["matchID"])
-                    msg.reply({"ack": 1, "matchID": myConf.gameID, "nodeID": myConf.nodeID})
+                    msg.reply({"ack": 1, "matchID": myConf.gameID, "pubKey": pickle.dumps(keyPair.pubKey)})
 
-            if "ack" in decodedMsg and "matchID" in decodedMsg and "nodeID" in decodedMsg:
+            if "ack" in decodedMsg and "matchID" in decodedMsg and "pubKey" in decodedMsg:
                 if decodedMsg["matchID"] == myConf.gameID and msg.sender not in myGameConf.gamePlyrs: 
+                    pubKey = pickle.loads(decodedMsg["pubKey"])
                     myGameConf.gamePlyrs += [msg.sender]
-                    myGameConf.gamePlyrsNode += [decodedMsg["nodeID"]]
+                    gameRes.plyrsPubK[msg.sender] = pubKey
                 print("Received Ack from player "+str(msg.sender)+"match ID: "+decodedMsg["matchID"])
 
             if "gameOn" in decodedMsg:
@@ -159,7 +173,6 @@ async def readHandler():
                 myConf.gameID = int(myConf.gameID) + 1
 
             if "pickleSignedGameResHash" in decodedMsg and "exchangeSignedGameResHash" not in decodedMsg:
-                pubKey = pickle.loads(decodedMsg["picklePubKey"])
                 signedGameResHash = pickle.loads(decodedMsg["pickleSignedGameResHash"])
                 gameResRehash = pickle.loads(decodedMsg["pickleGameResRehash"])
 
@@ -173,7 +186,6 @@ async def readHandler():
                 gameRes.plyrsResHash[myConf.ID][msg.sender] = gameResRehash
                 gameRes.plyrsSignRes[msg.sender][msg.sender] = signedGameResHash
                 gameRes.plyrsResHash[msg.sender][msg.sender] = gameResRehash
-                gameRes.plyrsPubK[msg.sender] = pubKey
 
                 myConf.sock.send({"pickleGameResRehash": decodedMsg["pickleGameResRehash"], "exchangeSignedGameResHash": 1, "playerID": msg.sender
                 , "pickleSignedGameResHash": decodedMsg["pickleSignedGameResHash"]})
@@ -205,25 +217,21 @@ def directSend(playerID, msg):
     receiverNode.send(flags.whisper, flags.whisper, msg)
     return
 
-def generateGameResult():
-    # player 1 always win, player 1 is the lowest-valued ID defined below
-    global myGameConf
-    numToPlayerID = {}
-    convertedNum = []
-    for pid in myGameConf.gamePlyrs:
-        convertedNum += [sum([ord(i) for i in str(pid)])]
-        numToPlayerID[convertedNum[-1]] = pid
-    qsort.qsort(convertedNum)
-    winner = numToPlayerID[convertedNum[0]]
-
-    thisResList = plyrResList([plyrRes(playerID, 1) if playerID == winner else plyrRes(playerID, 0) for playerID in myGameConf.gamePlyrs])
-    return thisResList
-
 def importGameResult():
-    with open(f"parsedMatches/{myConf.gameID}", "r") as f:
+    with open(f"{myConf.gameID}", "r") as f:
         content = f.read()
-    thisResList = plyrResList_new({})
-    return
+    content = json.loads(content)
+
+    matchData = []
+    radiantWins = content["radiant_win"]
+    enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
+    for i in range(0, len(content["players"])):
+        matchData += [{}]
+        for j in enum:
+            matchData[i][j] = content["players"][i]["benchmarks"][j]["raw"]
+        matchData[i]["isRadiant"] = content["players"][i]["isRadiant"]
+
+    return plyrResList_new(matchData, radiantWins)
 
 def crossVerifyGameRes():
     # check if every signed is valid
@@ -240,11 +248,15 @@ def crossVerifyGameRes():
                 return False
     return True
 
-def broadcastOnGameRes():
-
+def broadcastOnGameRes(consensusGameRes):
+    sortedPubKey = [gameRes.plyrsPubK[i].decode("utf-8") for i in myGameConf.gamePlyrs]
+    res =  requests.post(f'http://{args.blockchain_addr}/matches/new'
+                , json={'plyrAddrList': sortedPubKey, 'winnerAddr': gameRes.plyrsPubK[consensusGameRes.returnMVP()].decode("utf-8"), 'matchData': consensusGameRes.returnDict()})
+    print(res.text)
     return
 
 def consensusOnGameRes():
+    # calculate and get the record with most consensus
     matchConsensus = {}
     for basePlayerID, baseResList in gameRes.plyrsRes.items():
         for dump, resList in gameRes.plyrsRes.items():
@@ -252,12 +264,15 @@ def consensusOnGameRes():
                 if basePlayerID not in matchConsensus: matchConsensus[basePlayerID] = 1
                 else: matchConsensus[basePlayerID] += 1
     count, consensusPlayerID = max((v, k) for k, v in matchConsensus.items())
-    winner = pickle.loads(gameRes.plyrsRes[consensusPlayerID]).getWinner()
-    if myConf.ID == winner:
-        print("I am the winner {}, broadcasting data...".format(winner))
-        broadcastOnGameRes()
+
+    # according to the most consensus record, get the MVP
+    consensusGameRes = pickle.loads(gameRes.plyrsRes[consensusPlayerID])
+    MVP = consensusGameRes.returnMVP()
+    if myConf.ID == MVP:
+        print("I am the MVP {}, broadcasting data...".format(MVP))
+        broadcastOnGameRes(consensusGameRes)
     else:
-        print("I am not the winner, the winner is {}".format(winner))
+        print("I am not the MVP, the MVP is {}".format(MVP))
     return
 
 def broadcastGameHash():
@@ -265,31 +280,48 @@ def broadcastGameHash():
     if myConf.ID not in gameRes.plyrsSignRes: gameRes.plyrsSignRes[myConf.ID] = {}
     if myConf.ID not in gameRes.plyrsResHash: gameRes.plyrsResHash[myConf.ID] = {}
 
-    gameRes.plyrsRes[myConf.ID] = pickle.dumps(generateGameResult())
+    gameRes.plyrsRes[myConf.ID] = pickle.dumps(importGameResult())
     gameResRehash = rehash.sha256(gameRes.plyrsRes[myConf.ID])
     gameResHash = SHA256.new(gameRes.plyrsRes[myConf.ID])
     signedGameResHash = pkcs1_15.new(RSA.import_key(keyPair.priKey)).sign(gameResHash)
     gameRes.plyrsSignRes[myConf.ID][myConf.ID] = signedGameResHash
     gameRes.plyrsResHash[myConf.ID][myConf.ID] = gameResHash
-    gameRes.plyrsPubK[myConf.ID] = keyPair.pubKey
 
     myConf.sock.send({"pickleGameResRehash": pickle.dumps(gameResRehash)
-        , "pickleSignedGameResHash": pickle.dumps(signedGameResHash), "picklePubKey": pickle.dumps(keyPair.pubKey)})
+        , "pickleSignedGameResHash": pickle.dumps(signedGameResHash)})
     return
 
 def broadcastGameRes():
     myConf.sock.send({"gameRes": gameRes.plyrsRes[myConf.ID]})
 
+def sortPlyrs(plyrs):
+    # serialize players public key to sort
+    plyrsNum = []
+    for pid in plyrs:
+        plyrsNum += [sum([ord(i) for i in str(gameRes.plyrsPubK[pid])])]
+    
+    # bubble sort players list for player order consistency among nodes (need stable sort)
+    for i in range(0, len(plyrsNum)):
+        for j in range(i, len(plyrsNum)):
+            if plyrsNum[j] > plyrsNum[i]:
+                plyrsNum[j], plyrsNum[i] = plyrsNum[i], plyrsNum[j]
+                plyrs[j], plyrs[i] = plyrs[i], plyrs[j]
+
+    return plyrs
+
 async def init_match():
     global myConf, myGameConf
-    myGameConf.gamePlyrs += [myConf.sock.id]
+    myGameConf.gamePlyrs += [myConf.ID]
+    gameRes.plyrsPubK[myConf.ID] = keyPair.pubKey
     while True:
-        if len(myGameConf.gamePlyrs) == 10:
-            print("Match {} has 10 players, starting match...".format(myConf.gameID))
+        if len(myGameConf.gamePlyrs) == 2:
+            print("Match {} has 4 players, starting match...".format(myConf.gameID))
             myGameConf.gameOn = True
-            time.sleep(5)
+            time.sleep(2)
+            myGameConf.gamePlyrs = sortPlyrs(myGameConf.gamePlyrs)
 
-            # shared turn phase 1: broadcast game hash, signedHash and pubKey
+            # shared turn phase 1: broadcast game hash, signedHash
+            # pubKey broadcasted in nodeHandshaking stage
             broadcastGameHash()
             timerOn = time.time()
             curTime = time.time()
@@ -323,13 +355,15 @@ async def init_match():
     elif matchVerified:
         print("match verification succeeded, having consensus...")
         consensusOnGameRes()
+    myGameConf.matchCompleted = True
+    return
 
 
 def nodeHandshaking():
     global myConf
     if not args.bootstrap:
-        handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID, "nodeID": myConf.nodeID}
-        print("Handshaking with mesh network... "+json.dumps(handshakingMsg))
+        handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID, "pubKey": pickle.dumps(keyPair.pubKey)}
+        print("Handshaking with mesh network... match ID: "+str(handshakingMsg["matchID"]))
         myConf.sock.send(handshakingMsg)
     try:
         # asyncio.ensure_future(readHandler())
@@ -339,10 +373,10 @@ def nodeHandshaking():
     except KeyboardInterrupt:
         pass
     finally:
-        print("ending program...")
+        print("match completed, ending p2p...")
         loop.close()
     return
 
 initNode()
-time.sleep(100)
+time.sleep(1)
 nodeHandshaking()

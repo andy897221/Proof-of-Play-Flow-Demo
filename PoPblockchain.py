@@ -24,6 +24,8 @@ class Blockchain:
         self.current_matches = []
         self.nodes = set()
 
+        self.new_block(plyrProof=100, previous_hash=1)
+
     def register_node(self, address):
         self.nodes.add(address)
 
@@ -58,7 +60,7 @@ class Blockchain:
     def new_match(self, match):
         self.current_matches.append({
             'plyrAddrList': match['plyrAddrList'],
-            'winnerAddr': match['winner'],
+            'winnerAddr': match['winnerAddr'],
             'matchData': match['matchData']
         })
         return self.last_block['index'] + 1
@@ -140,12 +142,15 @@ def return_status():
 @app.route('/matches/new', methods=['POST'])
 def new_match():
     # add new match
-    match = request.get_json()
+    match = json.loads(request.data)
     required = ['plyrAddrList', 'winnerAddr', 'matchData']
     if not all(k in match for k in required):
         return 'Missing values', 400
+    match['plyrAddrList'] = [bytes(i, encoding='utf-8') for i in match['plyrAddrList']]
+    match['winnerAddr'] = bytes(match['winnerAddr'], encoding='utf-8')
     index = blockchain.new_match(match)
     response = {'message': f'match will be added to Block {index}'}
+    print(response)
     return json.dumps(response), 201
 
 @app.route('/chain', methods=['GET'])
