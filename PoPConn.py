@@ -47,20 +47,6 @@ class gameRes:
     plyrsPubK = {}
 
 # object
-class plyrRes:
-    def __init__(self, playerID, win):
-        self.playerID = playerID
-        self.win = win
-    # def __eq__(self, other):
-    #     return self.playerID == other.playerID and self.win == other.win
-
-class plyrResList: # = plyrsRes in gameRes
-    def __init__(self, plyrResList):
-        self.plyrResList = plyrResList
-    def getWinner(self):
-        for plyrRes in self.plyrResList:
-            if plyrRes.win: return plyrRes.playerID
-
 class plyrResList_new:
     def __init__(self, matchData, radiantWins):
         # matchData = [{"gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min", "isRadiant"}, {}, ... ,{}]

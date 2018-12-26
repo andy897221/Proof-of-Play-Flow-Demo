@@ -11,20 +11,16 @@ Implementation of the image
 
 To run a node, use the following command
 
-Initalize local bootstrap node first, where -b indicates it is bootstrap node, -p indicates the port, -m indicates the match ID
+Initalize local bootstrap node first, where -b indicates it is bootstrap node, -p indicates the port, -m indicates the match data to import (simulate the output of finishing a match) -i indicates the ID/username of the node, for retrieving the public / private key -a indicates the node's blockchain address, to broadcast the match data
 
-`python PoPConn.py -b 1 -p 1000 -m 1`
+`ppython PoPConn.py -b 1 -i 1 -p 1000 -m ./parsedMatches/1533081603_4035506300_match.data -a 127.0.0.1:9000`
 
 
 then initalize any non bootstrap node, where bootstrap node is assumed as port 1000 in the code
 
-`python PoPConn.py -p 1000 -m 1`
+`python PoPConn.py -i 2 -p 1001 -m ./parsedMatches/1533081603_4035506300_match.data -a 127.0.0.1:9000`
 
-the following image is the demostration of two nodes being connected
-
-![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun1.PNG "init")
-
-And the following image is the result of a match
+The following image shows a match of 2 players are initialized and completed, and broadcast to the MVP's blockchain
 
 ![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun2.PNG "consensus")
 
