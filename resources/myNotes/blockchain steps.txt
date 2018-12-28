@@ -1,0 +1,53 @@
+- a mechanics to store node address (i.e. ask bootstrap node & register_nodes)
+- check consensus (i.e. trigger /nodes/resolve)
+- proof-of-play (i.e. a script has counter that send match data time to time to blockchain (triggering new_match()), proof_of_play() self check when match number > some numbers, trigger blockchain.proof_of_play())
+- tell everyone it knows that this is the match result (in proof_of_play(), for each node, trigger /nodes/resolve, after new block has been added)
+- need to parallel two other functions: broadcasting results & check results
+
+
+block interval?????
+use collective proof-of-play: if all collected players score = certain score --> block write
+eliminate problem of infinite fork
+can control difficulty by adjusting certain score
+
+
+score?
+gensis block: 500 records
+
+block interval: use kills as proof
+criteria: group of players try to reach a kill milestone
+nothing-at-a-stake problem: just say player A + other players = correct fork / player B + other players = correct fork ..... player N, because nothing at a stake
+solution idea: need intrinsic cost for forking
+solution idea: DPoS avoid this problem because small group of people can re-elect (cannot vote all forks and not get kicked)
+no nothing-at-a-stake problem: the voting right is based on being MVP, too troublesome to make decision, follow majority consensus to keep minimum profit
+dont-know-follow-which-fork: kill should be high, so competitive miners become lesser and lesser / done, confirm after n blocks
+
+defining proof:
+depends on the population (affect the growth of the kills per min of the sys)
+
+
+Problem:
+if just use kills to determine reached target or not, can easily reach target and fork (because pool kills are easy to conflict)
+we need to make match pool is just matches to write, and winner stake is what determine the block writer is
+so, we first evaulate player avg kills of his mmr by his played match avg kill
+then, let say we expect player to play 5 matches, so avg kill * 5
+if player kills reached the avg kill * 5 kills, then broadcast target completed
+since everyone gains rewards, nothing-at-a-stake shouldnt exists, beside, player cannot guarantee another mvp chance = cannot chain his fork consistently
+
+dont use kill, use plyrRating instead, so plyrRating ratio * 5
+how?
+
+1. since we assume mvp transformation normalize score to a standard, normalize a player scores and get the max
+2. get all max of 500 records, get avg of the max
+3. the avg * 5 is the target
+
+
+hash func design:
+1. if sum of rating % avg = 0, is proved
+2. or if sum of rating > target, is also proved
+
+current problem:
+1. dont have checkpoint
+2. dont have pri pub key usage except indicating users (user id)
+3. target system is simple
+4. consensus is passive

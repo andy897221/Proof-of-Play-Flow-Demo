@@ -17,6 +17,7 @@ parser.add_argument("-i", "--nodeID", type=int, help="the given node ID")
 parser.add_argument("-p", "--port", type=int, help="the opening port number for p2p connection")
 parser.add_argument("-b", "--bootstrap", type=int, help="whether this node is a bootstrap node")
 parser.add_argument("-a", "--blockchain_addr", type=str, help="the address of the blockchain")
+parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
 args = parser.parse_args()
 
 # concurrency handler
@@ -63,16 +64,25 @@ class plyrResList_new:
         plyrRating, ratingBase = {"param": [], "rating": []}, []
 
         for i in range(0, len(matchData)):
-            ratingBase = [matchData[i][j] for j in enum]
+            ratingBase += [[matchData[i][j] for j in enum]]
+        ratingBase = list(np.asarray(ratingBase).sum(axis=0))
         
         for i in range(0, len(matchData)):
             plyrallParam = [(matchData[i][enum[j]] / ratingBase[j]) if ratingBase[j] != 0 else 0 for j in range(0, len(enum))]
             plyrRating["param"] += [enum[np.argmax(plyrallParam)]]
             plyrRating["rating"] += [max(plyrallParam)]
-        plyrRating["rating"] = np.asarray(plyrRating["rating"])
+        plyrRating_np = np.asarray(plyrRating["rating"])
 
-        plyrWins = np.asarray([matchData[i]["isRadiant"] for i in range(0, len(matchData))])
-        return int(np.argmax(plyrRating["rating"][plyrWins])), plyrRating["param"][np.argmax(plyrRating["rating"][plyrWins])]
+        plyrWins = []
+        for i in range(0,len(matchData)):
+            if matchData[i]["isRadiant"] and radiantWins: plyrWins += [True]
+            elif matchData[i]["isRadiant"] and not radiantWins: plyrWins += [False]
+            elif not matchData[i]["isRadiant"] and radiantWins: plyrWins += [False]
+            elif not matchData[i]["isRadiant"] and not radiantWins: plyrWins += [True]
+        plyrWins = np.asarray(plyrWins)
+        
+        mvpIndex = np.where(plyrWins == True)[0][np.argmax(plyrRating_np[plyrWins])]
+        return mvpIndex, plyrRating["param"][mvpIndex]
 
     def returnMVP(self):
         return gameConf.gamePlyrs[self.MVP]
@@ -85,20 +95,20 @@ myConf = initConfig()
 myGameConf = gameConf()
 # function
 def init_keyPair():
-    if not os.path.isfile(f"{args.nodeID}.pubKey") or not os.path.isfile(f"{args.nodeID}.pubKey"):
+    if not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.pubKey") or not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.priKey"):
         print("no key pair found, generating new private and public key for node ID.")
         key = RSA.generate(2048)
         keyPair.priKey = key.export_key()
         keyPair.pubKey = key.publickey().export_key()
-        with open(f"{args.nodeID}.pubKey", "wb") as pubKeyF:
+        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "wb") as pubKeyF:
             pubKeyF.write(key.publickey().export_key())
-        with open(f"{args.nodeID}.priKey", "wb") as priKeyF:
+        with open(f"{args.keyLoc}/{args.nodeID}.priKey", "wb") as priKeyF:
             priKeyF.write(key.export_key())
     else:
         print("key pair found, reading existing private and public key for node ID.")
-        with open(f"{args.nodeID}.pubKey", "rb") as pubKeyF:
+        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as pubKeyF:
             keyPair.pubKey = pubKeyF.read()
-        with open(f"{args.nodeID}.priKey", "rb") as priKeyF:
+        with open(f"{args.keyLoc}/{args.nodeID}.priKey", "rb") as priKeyF:
             keyPair.priKey = priKeyF.read()
     return
 
@@ -300,8 +310,8 @@ async def init_match():
     myGameConf.gamePlyrs += [myConf.ID]
     gameRes.plyrsPubK[myConf.ID] = keyPair.pubKey
     while True:
-        if len(myGameConf.gamePlyrs) == 2:
-            print("Match {} has 4 players, starting match...".format(myConf.gameID))
+        if len(myGameConf.gamePlyrs) == 10:
+            print("Match {} has 10 players, starting match...".format(myConf.gameID))
             myGameConf.gameOn = True
             time.sleep(2)
             myGameConf.gamePlyrs = sortPlyrs(myGameConf.gamePlyrs)

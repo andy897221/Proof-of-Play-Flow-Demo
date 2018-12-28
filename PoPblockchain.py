@@ -14,47 +14,124 @@ from flask import Flask, jsonify, request
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstrap node")
 parser.add_argument("-i", "--nodeID", type=int, help="the id of a node")
+parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
+parser.add_argument("-f", "--fileLoc", type=str, help="blockchain file location")
 args = parser.parse_args()
+
+class helper:
+    def get_rating(matchData, plyrIndex):
+        enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
+        plyrRating, ratingBase = {"param": 0, "rating": 0}, []
+        for i in range(0, len(matchData)):
+            ratingBase += [[matchData[i][j] for j in enum]]
+        ratingBase = list(np.asarray(ratingBase).sum(axis=0))
+
+        plyrallParam = [(matchData[plyrIndex][enum[j]] / ratingBase[j]) if ratingBase[j] != 0 else 0 for j in range(0, len(enum))]
+        plyrRating["param"] = [enum[np.argmax(plyrallParam)]]
+        plyrRating["rating"] = [max(plyrallParam)]
+        return plyrRating["rating"], plyrRating["param"]
+
+    def get_total_rating(matchData, plyrPubKey):
+        totalRating = 0
+        for match in matchData:
+            totalRating += helper.get_rating(match['matchData'], np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0][0])
+        return total_rating
+
+    def is_any_MVP(matchData, plyrPubKey):
+        for match in matchData:
+            if plyrPubKey == match['winnerAddr']: return True
+        return False
+
+    def broadcastResult(nodes, chain):
+        for node in nodes:
+            print(f"broadcasting...current node: {node}")
+            res = requests.post(f"http://{node}/chain/write", json={"chain": chain})
+            print(res.text)
+        return
+
+    def get_target_rating(matchesData, plyrPubKey, difficulty):
+        total_rating = 0
+        for match in matchesData:
+            plyrIndex = np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0]
+            if len(plyrIndex) == 0: return -1
+            plyrIndex = plyrIndex[0]
+            rating, dump = get_rating(match, plyrIndex)
+            total_rating += rating
+        return (total_rating / len(matchesData)) * difficulty
+
 
 class Blockchain:
     # longest chain wins because player wants their data asap, so they will agree
     def __init__(self):
         self.chain = []
-        self.currernt_game_data = []
         self.current_matches = []
+        self.current_target = 0
+        self.difficulty = 5
+        self.myPubKey = ""
         self.nodes = set()
 
-        self.new_block(plyrProof=100, previous_hash=1)
+        # import first 500 matches, assume 50 players (requirement to become a miner = played 10 matches)
+        if not os.path.isfile(f"{args.nodeID}.blockchain"):
+            self.current_target = -1
+            with open("genesis_block.data", "r") as f:
+                data = json.loads(f.read())
+                for i in data: self.new_match(i)
+            proof_of_play(genesis=True)
+        else:
+            with open(f"{args.fileLoc}", "r") as f:
+                data = json.loads(f.read())
+                self.chain = data["chain"]
+                self.current_matches = data["current_matches"]
+                self.current_target = data["current_target"]
+                self.difficulty = data["difficulty"]
+                self.myPubKey = data["myPubKey"]
+                self.nodes = data["nodes"]
+        saveState()
 
     def register_node(self, address):
         self.nodes.add(address)
 
-    def proof_of_play(self, all_current_matches):
-        # get best match (all data is highest) as seed
-        # randomly pick one match from allMatches
-        # allMatches should have a probability distribution of sin wave
+    def proof_of_play(self,genesis=False):
+        # find if current matches score > target
+        # find if there exists one with this player as mvp
+        isMVP = False
+        totalRating = 0
+        totalRating = helper.get_total_rating(self.current_matches, self.myPubKey)
+        isMVP = is_any_MVP(matchData, self.myPubKey)
+        print(f"Target: {self.current_target}, Current Total Rating: {totalRating}, Is MVP: {isMVP}.")
+        if totalRating < target or not isMVP: return
+        print(f"Target reached, broadcasting results...")
+        self.new_block(totalRating, 1, genesis=True)
+        helper.broadcastResult()
         return
 
     def valid_match(self):
         # go to all players addr, valid pub pri key
+
         return
 
-    def valid_PoP(self, all_current_matches):
-        # go through PoP process again
-        return
+    def valid_PoP(self, all_current_matches, pubKey, target):
+        # check if total rating > target
+        if helper.get_total_rating(all_current_matches, pubKey) < target: return False
+        else: return True
 
-    def new_block(self, plyrProof, previous_hash=None):
+    def new_block(self, plyrProof, pubKey, previous_hash=None, genesis=False):
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time.time(),
             'matches': self.current_matches,
-            'gameData': self.currernt_game_data,
-            'plyrProof': plyrProof, # proof that the block writer is indeed the lottery winner
-            'previous_hash': previous_hash
+            'plyrProof': plyrProof,
+            'popTarget': self.current_target,
+            'previous_hash': previous_hash or self.hash(self.last_block())
         }
 
         self.current_matches = []
+        if not genesis:
+            self.target = get_target_rating(self.last_block().current_matches, self.myPubKey)
+        else:
+            self.target = get_target_rating(block.matches, self.myPubKey)
         self.chain.append(block)
+        saveState()
         return block
 
     def new_match(self, match):
@@ -63,18 +140,17 @@ class Blockchain:
             'winnerAddr': match['winnerAddr'],
             'matchData': match['matchData']
         })
+        saveState()
+        proof_of_play()
         return self.last_block['index'] + 1
 
     def valid_chain(self, chain):
-        # ALSO CHECK IF EACH BLOCK HAS ENOUGH RECORDS!!!!!!!!
+        # valid matches too
         last_block = chain[0]
         current_index = 1
 
         while current_index < len(chain):
             block = chain[current_index]
-            print(f'{last_block}')
-            print(f'{block}')
-            print("\n-----------\n")
             # Check that the hash of the block is correct
             if block['previous_hash'] != self.hash(last_block):
                 return False
@@ -87,28 +163,16 @@ class Blockchain:
         
         return True
 
-    def resolve_conflicts(self):
-        neighbours = self.nodes
-        new_chain = None
-
-        max_length = len(self.chain)
-
-        for node in neighbours:
-            response = requests.get(f'http://{node}/chain')
-
-            if response.status_code == 200:
-                length = response.json()['length']
-                chain = response.json()['chain']
-
-                if length > max_length and self.valid_chain(chain):
-                    max_length = length
-                    new_chain = chain
-        
-        if new_chain:
-            self.chain = new_chain
-            return True
-        return False
+    def resolve_conflict(self, chain):
+        if len(chain) > len(self.chain):
+            if self.valid_chain(self, chain):
+                self.chain = chain
             
+    def saveState(self):
+        data = json.dumps({"chain": self.chain, "current_matches": self.current_matches, "current_target": self.current_target, "difficulty": self.difficulty, "myPubKey": self.myPubKey, "nodes": self.nodes})
+        with open(f"{args.nodeID}.blockchain", "w") as f:
+            f.write(data)
+        return
 
     @staticmethod
     def hash(block):
@@ -120,6 +184,14 @@ class Blockchain:
         return self.chain[-1]
 
 
+def init_keyPair(blockchain):
+    if not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.pubKey") or not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.priKey"):
+        print("no key pair found, non-valid player.")
+    else:
+        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as pubKeyF:
+            blockchain.pubKey = pubKeyF.read()
+    return
+
 
 myPort = 9000
 if args.bootstrapIP is not None: bootstrapNode = args.bootstrapIP
@@ -129,8 +201,6 @@ node_identifier = str(uuid4()).replace('-', '')
 
 class config:
     knownNodesFile = f"knownNodes{args.nodeID}.appData"
-
-
 
 ######### blockchain host ###########
 
@@ -187,21 +257,14 @@ def return_nodes():
     print(list(blockchain.nodes))
     return json.dumps({"nodes": list(blockchain.nodes)}), 200
 
-@app.route('/nodes/resolve', methods=['GET'])
+@app.route('/chain/write', methods=['POST'])
 def consensus():
-    replaced = blockchain.resolve_conflicts()
-    if replaced:
-        response = {
-            'message': 'Our chain was replaced',
-            'new_chain': blockchain.chain
-        }
-    else:
-        response = {
-            'message': 'Our chain is authoritative',
-            'chain': blockchain.chain
-        }
-    return json.dumps(response), 200
-
+    # dont have checkpoint, pass full chain
+    full_chain = json.loads(requests.data)["chain"]
+    res = blockchain.resolve_conflict(full_chain)
+    if res: response = {'message': 'a chain has replaced ours'}
+    else: response = {'message': 'chain has been rejected'}
+    return json.dumps(response), 201
 
 ########### blockchain init #############
 def load_nodes():    
@@ -228,14 +291,11 @@ def run_server():
     setup_app(app)
     app.run(host='0.0.0.0', port=myPort)
 
-
-def proof_of_play():
-    
-    return
-
 def main():
-    Process(target=run_server, args=()).start()
-    Process(target=proof_of_play, args=()).start()
+    global blockchain
+    init_keyPair(blockchain)
+    # Process(target=run_server, args=()).start()
+    run_server()
 
 if __name__ == "__main__":
     main()
