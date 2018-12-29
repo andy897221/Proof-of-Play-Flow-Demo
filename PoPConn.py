@@ -310,8 +310,8 @@ async def init_match():
     myGameConf.gamePlyrs += [myConf.ID]
     gameRes.plyrsPubK[myConf.ID] = keyPair.pubKey
     while True:
-        if len(myGameConf.gamePlyrs) == 10:
-            print("Match {} has 10 players, starting match...".format(myConf.gameID))
+        if len(myGameConf.gamePlyrs) == 2:
+            print("Match {} has 2 players, starting match...".format(myConf.gameID))
             myGameConf.gameOn = True
             time.sleep(2)
             myGameConf.gamePlyrs = sortPlyrs(myGameConf.gamePlyrs)

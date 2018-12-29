@@ -16,6 +16,7 @@ parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstr
 parser.add_argument("-i", "--nodeID", type=int, help="the id of a node")
 parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
 parser.add_argument("-f", "--fileLoc", type=str, help="blockchain file location")
+parser.add_argument("-s", "--saveState", type=int, help="enable saving blockchain or not (for testing mode)")
 args = parser.parse_args()
 
 class helper:
@@ -131,7 +132,8 @@ class Blockchain:
         else:
             self.target = get_target_rating(block.matches, self.myPubKey)
         self.chain.append(block)
-        saveState()
+        print("new block created.")
+        if args.saveState: saveState()
         return block
 
     def new_match(self, match):
@@ -140,7 +142,7 @@ class Blockchain:
             'winnerAddr': match['winnerAddr'],
             'matchData': match['matchData']
         })
-        saveState()
+        if args.saveState: saveState()
         proof_of_play()
         return self.last_block['index'] + 1
 
