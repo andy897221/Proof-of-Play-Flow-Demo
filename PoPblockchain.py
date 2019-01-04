@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 from multiprocessing import Process
 import argparse
+import numpy as np
 
 import requests
 from flask import Flask, jsonify, request
@@ -19,6 +20,11 @@ parser.add_argument("-f", "--fileLoc", type=str, help="blockchain file location"
 parser.add_argument("-s", "--saveState", type=int, help="enable saving blockchain or not (for testing mode)")
 args = parser.parse_args()
 
+#check arg input
+if args.fileLoc is None or args.keyLoc is None or args.nodeID is None or args.saveState is None:
+    print("please supply all necessary arguments (all except bootstrapIP).")
+    exit()
+test = 0
 class helper:
     def get_rating(matchData, plyrIndex):
         enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
@@ -29,14 +35,19 @@ class helper:
 
         plyrallParam = [(matchData[plyrIndex][enum[j]] / ratingBase[j]) if ratingBase[j] != 0 else 0 for j in range(0, len(enum))]
         plyrRating["param"] = [enum[np.argmax(plyrallParam)]]
-        plyrRating["rating"] = [max(plyrallParam)]
+        plyrRating["rating"] = max(plyrallParam)
         return plyrRating["rating"], plyrRating["param"]
 
     def get_total_rating(matchData, plyrPubKey):
         totalRating = 0
         for match in matchData:
-            totalRating += helper.get_rating(match['matchData'], np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0][0])
-        return total_rating
+            plyrIndex = np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0]
+            if len(plyrIndex) == 0: continue
+            plyrIndex = plyrIndex[0]
+            rating, dump = helper.get_rating(match['matchData'], plyrIndex)
+            totalRating += rating
+            print(totalRating, rating)
+        return totalRating
 
     def is_any_MVP(matchData, plyrPubKey):
         for match in matchData:
@@ -54,9 +65,9 @@ class helper:
         total_rating = 0
         for match in matchesData:
             plyrIndex = np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0]
-            if len(plyrIndex) == 0: return -1
+            if len(plyrIndex) == 0: continue
             plyrIndex = plyrIndex[0]
-            rating, dump = get_rating(match, plyrIndex)
+            rating, dump = helper.get_rating(match['matchData'], plyrIndex)
             total_rating += rating
         return (total_rating / len(matchesData)) * difficulty
 
@@ -67,27 +78,32 @@ class Blockchain:
         self.chain = []
         self.current_matches = []
         self.current_target = 0
+        self.current_rating = 0
         self.difficulty = 5
         self.myPubKey = ""
+        self.signature = ""
         self.nodes = set()
 
         # import first 500 matches, assume 50 players (requirement to become a miner = played 10 matches)
-        if not os.path.isfile(f"{args.nodeID}.blockchain"):
+        if not os.path.isfile(f"{args.fileLoc}/{args.nodeID}.blockchain"):
             self.current_target = -1
+            with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "r") as f:
+                self.myPubKey = f.read()
             with open("genesis_block.data", "r") as f:
                 data = json.loads(f.read())
-                for i in data: self.new_match(i)
-            proof_of_play(genesis=True)
+                for i in data: self.new_match(i, genesis=True)
+            self.proof_of_play(genesis=True)
         else:
-            with open(f"{args.fileLoc}", "r") as f:
+            with open(f"{args.fileLoc}/{args.nodeID}.blockchain", "r") as f:
                 data = json.loads(f.read())
                 self.chain = data["chain"]
                 self.current_matches = data["current_matches"]
                 self.current_target = data["current_target"]
+                self.current_rating = data["current_rating"]
                 self.difficulty = data["difficulty"]
                 self.myPubKey = data["myPubKey"]
-                self.nodes = data["nodes"]
-        saveState()
+                self.nodes = set(data["nodes"])
+        if args.saveState: self.saveState()
 
     def register_node(self, address):
         self.nodes.add(address)
@@ -96,14 +112,15 @@ class Blockchain:
         # find if current matches score > target
         # find if there exists one with this player as mvp
         isMVP = False
-        totalRating = 0
-        totalRating = helper.get_total_rating(self.current_matches, self.myPubKey)
-        isMVP = is_any_MVP(matchData, self.myPubKey)
-        print(f"Target: {self.current_target}, Current Total Rating: {totalRating}, Is MVP: {isMVP}.")
-        if totalRating < target or not isMVP: return
-        print(f"Target reached, broadcasting results...")
-        self.new_block(totalRating, 1, genesis=True)
-        helper.broadcastResult()
+        self.current_rating += helper.get_total_rating(self.current_matches, self.myPubKey)
+        isMVP = helper.is_any_MVP(self.current_matches, self.myPubKey)
+        print(f"Target: {self.current_target}, Current Total Rating: {self.current_rating}, Is MVP: {isMVP}.")
+        if self.current_rating < self.current_target or not isMVP: return
+        print("Target reached.")
+        self.new_block(genesis=genesis)
+        print("Broadcasting results...")
+        helper.broadcastResult(self.nodes, self.chain)
+        # the first genesis process is correct, another process of pop comes up before web hosting, whats that?
         return
 
     def valid_match(self):
@@ -116,34 +133,41 @@ class Blockchain:
         if helper.get_total_rating(all_current_matches, pubKey) < target: return False
         else: return True
 
-    def new_block(self, plyrProof, pubKey, previous_hash=None, genesis=False):
+    def new_block(self, genesis=False):
+        if genesis: previous_hash = 1
+        else: previous_hash = self.hash(self.last_block())
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time.time(),
             'matches': self.current_matches,
-            'plyrProof': plyrProof,
             'popTarget': self.current_target,
-            'previous_hash': previous_hash or self.hash(self.last_block())
+            'popRating': self.current_rating,
+            'difficulty': self.difficulty,
+            'plyrPubKey': self.myPubKey,
+            'previous_hash': previous_hash
         }
 
         self.current_matches = []
         if not genesis:
-            self.target = get_target_rating(self.last_block().current_matches, self.myPubKey)
+            self.current_target = helper.get_target_rating(self.last_block().current_matches, self.myPubKey, self.difficulty)
         else:
-            self.target = get_target_rating(block.matches, self.myPubKey)
+            self.current_target = helper.get_target_rating(block["matches"], self.myPubKey, self.difficulty)
+        self.current_rating = 0
         self.chain.append(block)
-        print("new block created.")
-        if args.saveState: saveState()
+        print(f"new block created. next target: {self.current_target}")
+        if args.saveState: self.saveState()
         return block
 
-    def new_match(self, match):
+    def new_match(self, match, genesis=False):
         self.current_matches.append({
             'plyrAddrList': match['plyrAddrList'],
             'winnerAddr': match['winnerAddr'],
             'matchData': match['matchData']
         })
-        if args.saveState: saveState()
-        proof_of_play()
+        if args.saveState: self.saveState()
+        # print('new match has been added. winner: ...{}'.format(self.current_matches[-1]["winnerAddr"].split("\n")[1][-10:-1]))
+        if not genesis: self.proof_of_play()
+        if genesis: return 1
         return self.last_block['index'] + 1
 
     def valid_chain(self, chain):
@@ -171,7 +195,7 @@ class Blockchain:
                 self.chain = chain
             
     def saveState(self):
-        data = json.dumps({"chain": self.chain, "current_matches": self.current_matches, "current_target": self.current_target, "difficulty": self.difficulty, "myPubKey": self.myPubKey, "nodes": self.nodes})
+        data = json.dumps({"chain": self.chain, "current_matches": self.current_matches, "current_target": self.current_target, "current_rating": self.current_rating, "difficulty": self.difficulty, "myPubKey": self.myPubKey, "nodes": list(self.nodes)})
         with open(f"{args.nodeID}.blockchain", "w") as f:
             f.write(data)
         return
@@ -211,6 +235,8 @@ blockchain = Blockchain()
 def return_status():
     return json.dumps({'status': 'ok'}), 200
 
+################# match hosting #################
+
 @app.route('/matches/new', methods=['POST'])
 def new_match():
     # add new match
@@ -225,13 +251,7 @@ def new_match():
     print(response)
     return json.dumps(response), 201
 
-@app.route('/chain', methods=['GET'])
-def full_chain():
-    response = {
-        'chain': blockchain.chain,
-        'length': len(blockchain.chain),
-    }
-    return json.dumps(response), 200
+################# node hosting ###############
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
@@ -255,9 +275,27 @@ def register_nodes():
 
 @app.route('/nodes/retrieve', methods=['GET'])
 def return_nodes():
-    print(blockchain.nodes)
-    print(list(blockchain.nodes))
     return json.dumps({"nodes": list(blockchain.nodes)}), 200
+
+############### chain hosting ##############
+
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return json.dumps(response), 200
+
+@app.route('/chain/status', methods=['GET'])
+def chain_status():
+    response = {
+        'current target': blockchain.current_target,
+        'current rating': blockchain.current_rating,
+        'difficulty': blockchain.difficulty,
+        'pubKey': blockchain.myPubKey
+    }
+    return json.dumps(response), 200
 
 @app.route('/chain/write', methods=['POST'])
 def consensus():
@@ -274,7 +312,7 @@ def load_nodes():
         with open(config.knownNodesFile, 'r') as content:
             addrs = content.read().split(" ")
             for addr in addrs: blockchain.nodes.add(addr)
-        print(f"nodes {str(addrs)} has been added.")
+        print("nodes has been initialized.")
     else:
         print("no known nodes needed to be added.")
 
@@ -282,7 +320,8 @@ def load_nodes():
         content = requests.get(f'http://{bootstrapNode}/nodes/retrieve').text
         requested_nodes = json.loads(content)['nodes']
         for addr in requested_nodes: blockchain.nodes.add(addr)
-        print(f"nodes {str(requested_nodes)} has been added from bootstrap node.")
+        print("new nodes has been added from bootstrap node.")
+    blockchain.saveState()
     return
 
 def setup_app(app):
