@@ -1,0 +1,13 @@
+Improvement
+- sign new block everytime writing (using own pri key)
+- a dictionary with key: pub key, val: ip addr for identify blockchains
+- moving average for rating
+- a block id
+- a match id (use file name? need re-gen genesis match with id)
+- a mechanism to add remaining matches not processed by others node as current matches if new block is by others node
+- verify chain by sign too
+
+Demo
+- a match generator generating other pub keys with specified winner and specified rating val
+- a way to show current status of the blockchain with clear UI of match data
+- keep inputting stream of matches by a 50 blockchains simulation, check forks afterwards (need a controller script to check all blockchains)

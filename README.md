@@ -7,7 +7,7 @@ Internal Consensus of PoP Blockchain
 
 Implementation of the image
 
-![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/rating.png "P2P")
+![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/rating.png "P2P")
 
 To run a node, use the following command
 
@@ -22,7 +22,7 @@ then initalize any non bootstrap node, where bootstrap node is assumed as port 1
 
 The following image shows a match of 2 players are initialized and completed, and broadcast to the MVP's blockchain
 
-![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/img/exampleRun2.PNG "consensus")
+![InternalConsensus](https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/exampleRun2.PNG "consensus")
 
 ## Problem
 

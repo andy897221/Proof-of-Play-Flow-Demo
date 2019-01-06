@@ -1,0 +1,3 @@
+class key:
+    pubKey = ""
+    priKey = ""
