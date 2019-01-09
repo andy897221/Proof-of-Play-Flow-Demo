@@ -1,13 +1,19 @@
 Improvement
-- sign new block everytime writing (using own pri key)
-- a dictionary with key: pub key, val: ip addr for identify blockchains
-- moving average for rating
-- a block id
-- a match id (use file name? need re-gen genesis match with id)
-- a mechanism to add remaining matches not processed by others node as current matches if new block is by others node
-- verify chain by sign too
+- (completed) sign new block everytime writing (using own pri key)
+- (completed) a dictionary with key: pub key, val: ip addr for identify blockchains
+- (completed) moving average for rating (need because previous block may not have blockchain owner's matches) (every 10 matches change average, so rating is chain dependent, not each block dependent (update each block))
+- (completed, index is id) a block id
+- (completed, already in matchData, field match_id) a match id (use file name? need re-gen genesis match with id)
+- (completed) a mechanism to add remaining matches not processed by others node as current matches if new block is by others node
+- (completed) verify chain by sign too
+- refactor PoPConn.py as API
+- valid matches
+- refactor popblockchain/ as API after examined PoS
 
 Demo
+- 1 player generate genesis block
 - a match generator generating other pub keys with specified winner and specified rating val
-- a way to show current status of the blockchain with clear UI of match data
+	- a way to test the main pos algorithm is working
+- minimum test case of two blockchains
+- a way to show current status of all the blockchains with clear UI of match data
 - keep inputting stream of matches by a 50 blockchains simulation, check forks afterwards (need a controller script to check all blockchains)

@@ -2,6 +2,8 @@ import numpy as np
 import requests
 
 class helper:
+    matches_for_target = 20
+
     def get_rating(matchData, plyrIndex):
         enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
         plyrRating, ratingBase = {"param": 0, "rating": 0}, []
@@ -32,17 +34,24 @@ class helper:
 
     def broadcastResult(nodes, chain):
         for node in nodes:
-            print(f"broadcasting...current node: {node}")
-            res = requests.post(f"http://{node}/chain/write", json={"chain": chain})
+            print(f"broadcasting...current node: {node[-10:-1]}")
+            res = requests.post(f"http://{nodes[node]}/chain/write", json={"chain": chain})
             print(res.text)
         return
 
-    def get_target_rating(matchesData, plyrPubKey, difficulty):
+    def get_target_rating(chain, plyrPubKey, difficulty):
         total_rating = 0
-        for match in matchesData:
-            plyrIndex = np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0]
-            if len(plyrIndex) == 0: continue
-            plyrIndex = plyrIndex[0]
-            rating, dump = helper.get_rating(match['matchData'], plyrIndex)
+        matches, plyrIndex = [], []
+        for block in range(len(chain)-1, -1, -1):
+            block = chain[block]
+            for match in block.matches:
+                plyrIndex = np.where(np.asarray(match['plyrAddrList']) == plyrPubKey)[0]
+                if len(plyrIndex) == 0: continue
+                plyrIndex += [plyrIndex[0]]
+                matches += [match['matchData']]
+                if len(matches) >= matches_for_target: break
+            if len(matches) >= matches_for_target: break
+        for match in range(0, len(matches)):
+            rating, dump = helper.get_rating(matches[match]['matchData'], plyrIndex[match])
             total_rating += rating
-        return (total_rating / len(matchesData)) * difficulty
+        return (total_rating / len(matches)) * difficulty

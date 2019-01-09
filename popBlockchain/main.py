@@ -11,9 +11,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstrap node")
 parser.add_argument("-i", "--nodeID", type=int, help="the id of a node")
 parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
-parser.add_argument("-f", "--fileLoc", type=str, help="blockchain file location")
+parser.add_argument("-f", "--fileLoc", type=str, help="blockchain related file location")
 parser.add_argument("-s", "--saveState", type=int, help="enable saving blockchain or not (for testing mode)")
+parser.add_argument("-p", "--isLocal", type=int, help="ip of local host deployment or public ip deployment")
 args = parser.parse_args()
+args.saveState = int(args.saveState)
+args.isLocal = int(args.isLocal)
 
 #check arg input
 if args.fileLoc is None or args.keyLoc is None or args.nodeID is None or args.saveState is None:
@@ -34,19 +37,23 @@ def init_keyPair(blockchain):
             key.priKey = priKeyF.read()
     return
 
-
-myPort = 9000
-if args.bootstrapIP is not None: bootstrapNode = args.bootstrapIP
-else: bootstrapNode = None
 app = Flask(__name__)
 node_identifier = str(uuid4()).replace('-', '')
+
 
 class config:
     knownNodesFile = f"knownNodes{args.nodeID}.appData"
 
+    myPort = 9000
+    if args.bootstrapIP is not None: bootstrapNode = args.bootstrapIP
+    else: bootstrapNode = None
+
+    if args.isLocal: myIP = '127.0.0.1'
+    else: myIP = requests.get('http://ip.42.pl/raw').text
+
 ######### blockchain host ###########
 
-blockchain = Blockchain()
+blockchain = Blockchain(args, helper)
 @app.route('/status', methods=['GET'])
 def return_status():
     return json.dumps({'status': 'ok'}), 200
@@ -73,19 +80,16 @@ def new_match():
 def register_nodes():
     content = json.loads(request.data)
     nodes = content["nodes"]
-    if nodes is None:
-        return "Error: Please supply a valid list of nodes", 400
-    for node in nodes:
-        blockchain.register_node(node)
+    for pubKey in nodes:
+        blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
 
     with open(config.knownNodesFile, 'w') as knownNode:
         serialize_node = ""
-        for node in blockchain.nodes: serialize_node += f"{node} "
-        knownNode.write(serialize_node[:-1])
+        knownNode.write(json.dumps(blockchain.nodes))
 
     response = {
         'message': 'New nodes have been added',
-        'total_nodes': list(blockchain.nodes),
+        'total_nodes': nodes,
     }
     return json.dumps(response), 201
 
@@ -123,19 +127,20 @@ def consensus():
     return json.dumps(response), 201
 
 ########### blockchain init #############
-def load_nodes():    
+def load_nodes():
+    blockchain.register_node(key.pubKey, config.myIP)
     if os.path.isfile(config.knownNodesFile):
         with open(config.knownNodesFile, 'r') as content:
-            addrs = content.read().split(" ")
-            for addr in addrs: blockchain.nodes.add(addr)
+            nodes = json.dumps(content)
+            for pubKey in nodes: blockchain.register_node(pubKey.encode('utf-8'), nodes[node])
         print("nodes has been initialized.")
     else:
         print("no known nodes needed to be added.")
 
-    if bootstrapNode is not None:
-        content = requests.get(f'http://{bootstrapNode}/nodes/retrieve').text
+    if config.bootstrapNode is not None:
+        content = requests.get(f'http://{config.bootstrapNode}/nodes/retrieve').text
         requested_nodes = json.loads(content)['nodes']
-        for addr in requested_nodes: blockchain.nodes.add(addr)
+        for pubKey in requested_nodes: blockchain.register_node(pubKey.encode('utf-8'), requested_nodes[pubKey])
         print("new nodes has been added from bootstrap node.")
     blockchain.saveState()
     return
@@ -146,10 +151,9 @@ def setup_app(app):
 
 def run_server():
     setup_app(app)
-    app.run(host='0.0.0.0', port=myPort)
+    app.run(host='0.0.0.0', port=config.myPort)
 
 def main():
-    global blockchain
     init_keyPair(blockchain)
     # Process(target=run_server, args=()).start()
     run_server()

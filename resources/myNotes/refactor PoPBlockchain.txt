@@ -1,0 +1,7 @@
+goal: make PoPBlockchain becomes an API
+
+user code:
+- RESTful API: send game records
+- because this is RESTful all user codes is in PoPConn
+
+NEED A CENTRALIZE MAIN.PY BECAUSE USER DONT UNDERSTAND WHAT PARAM TO INPUT, DETAILS IN POPCONN

@@ -1,0 +1,18 @@
+goal: make PoPConn becomes an API
+
+user code:
+- init param: match session id, node id, port, keyLoc, blockchain_addr
+- plug handshake / establish connection, return plyrID if players number full
+- plug game records / plyrID, return jsonify-ed consensusGameRes if you are winner (remember to sort pub key)
+- send jsonify records to chain using broadcastToChain()
+
+global init script, PoP_init():
+- global main.py, for init param to run popBlockchain/main.py and popGame/main.py
+	- nodeID, keyLoc (have default), fileLoc (have default) etc
+- code interface to start blockchain (before PoPConn, simulate how a developer can use it) and PoPConn (explained in this .txt)
+
+API to use:
+- PoP_init()
+- nodeHandshaking()
+- shared turn period
+- broadcastToChain()
