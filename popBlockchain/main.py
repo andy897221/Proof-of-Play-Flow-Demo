@@ -1,11 +1,14 @@
+from helper import *
+from blockchain import *
+from key import *
+
 import json
 import os
-from uuid import uuid4
 from multiprocessing import Process
 import argparse
 
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, request
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstrap node")
@@ -23,11 +26,7 @@ if args.fileLoc is None or args.keyLoc is None or args.nodeID is None or args.sa
     print("please supply all necessary arguments (all except bootstrapIP).")
     exit()
 
-from helper import *
-from key import *
-from blockchain import *
-
-def init_keyPair(blockchain):
+def init_key():
     if not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.pubKey") or not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.priKey"):
         print("no key pair found, non-valid player.")
     else:
@@ -36,10 +35,6 @@ def init_keyPair(blockchain):
         with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as priKeyF:
             key.priKey = priKeyF.read()
     return
-
-app = Flask(__name__)
-node_identifier = str(uuid4()).replace('-', '')
-
 
 class config:
     knownNodesFile = f"knownNodes{args.nodeID}.appData"
@@ -53,6 +48,7 @@ class config:
 
 ######### blockchain host ###########
 
+app = Flask(__name__)
 blockchain = Blockchain(args, helper)
 @app.route('/status', methods=['GET'])
 def return_status():
@@ -132,7 +128,7 @@ def load_nodes():
     if os.path.isfile(config.knownNodesFile):
         with open(config.knownNodesFile, 'r') as content:
             nodes = json.dumps(content)
-            for pubKey in nodes: blockchain.register_node(pubKey.encode('utf-8'), nodes[node])
+            for pubKey in nodes: blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
         print("nodes has been initialized.")
     else:
         print("no known nodes needed to be added.")
@@ -146,17 +142,13 @@ def load_nodes():
     return
 
 def setup_app(app):
+    init_key()
     load_nodes()
-    return
 
-def run_server():
+def main():
     setup_app(app)
     app.run(host='0.0.0.0', port=config.myPort)
 
-def main():
-    init_keyPair(blockchain)
-    # Process(target=run_server, args=()).start()
-    run_server()
-
+# Process(target=run_server, args=()).start()
 if __name__ == "__main__":
     main()

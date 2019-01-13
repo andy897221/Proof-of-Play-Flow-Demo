@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="907ae072-54df-4dfc-94d0-81fd55a2a3e7" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/PoP.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/generator/importGameRes.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/_helper.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/config.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/cross_verify.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/helper.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/main.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/popGame/sock.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/resources/libExamples/python_class/data_class.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/resources/libExamples/python_class/read2.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/resources/libExamples/python_class/reader1.py" />
+      <change beforePath="$PROJECT_DIR$/PoP_init.py" afterPath="$PROJECT_DIR$/PoP_init.py" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/1.priKey" afterPath="$PROJECT_DIR$/config/nodeKey/1.priKey" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/1.pubKey" afterPath="$PROJECT_DIR$/config/nodeKey/1.pubKey" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/10.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/10.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/11.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/11.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/12.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/12.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/13.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/13.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/14.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/14.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/15.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/15.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/16.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/16.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/17.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/17.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/18.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/18.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/19.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/19.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/2.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/2.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/20.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/20.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/21.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/21.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/22.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/22.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/23.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/23.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/24.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/24.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/25.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/25.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/26.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/26.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/27.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/27.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/28.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/28.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/29.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/29.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/3.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/3.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/30.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/30.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/31.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/31.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/32.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/32.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/33.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/33.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/34.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/34.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/35.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/35.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/36.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/36.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/37.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/37.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/38.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/38.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/39.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/39.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/4.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/4.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/40.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/40.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/41.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/41.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/42.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/42.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/43.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/43.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/44.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/44.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/45.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/45.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/46.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/46.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/47.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/47.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/48.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/48.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/49.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/49.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/5.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/5.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/50.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/50.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/6.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/6.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/7.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/7.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/8.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/8.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/9.priKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/config/nodeKey/9.pubKey" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/popBlockchain/helper.py" afterPath="$PROJECT_DIR$/popBlockchain/helper.py" />
+      <change beforePath="$PROJECT_DIR$/popBlockchain/main.py" afterPath="$PROJECT_DIR$/popBlockchain/main.py" />
+      <change beforePath="$PROJECT_DIR$/popGame/PoPConn.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/resources/myNotes/refactor PoPConn.txt" afterPath="$PROJECT_DIR$/resources/myNotes/refactor PoPConn.txt" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/popGame/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-626">
+              <caret line="17" column="0" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PoP.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PoP.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="423">
+              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cross_verify.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/popGame/cross_verify.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="32" lean-forward="false" selection-start-line="0" selection-start-column="32" selection-end-line="0" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="importGameRes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generator/importGameRes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="329">
+              <caret line="7" column="62" lean-forward="false" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="_helper.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/popGame/_helper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="470">
+              <caret line="10" column="34" lean-forward="false" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="helper.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/popGame/helper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1301">
+              <caret line="30" column="19" lean-forward="false" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/popGame/config.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="564">
+              <caret line="12" column="15" lean-forward="false" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sock.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/popGame/sock.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="141">
+              <caret line="3" column="55" lean-forward="false" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PoP_init.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PoP_init.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="564">
+              <caret line="12" column="88" lean-forward="true" selection-start-line="12" selection-start-column="88" selection-end-line="12" selection-end-column="88" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>directSend</find>
+      <find>key</find>
+      <find>init_keyPair</find>
+      <find>myGameConf</find>
+      <find>global myGameConf</find>
+      <find>global</find>
+      <find>gameConf.gamePlyrs</find>
+      <find>loop</find>
+      <find>plyr_data</find>
+      <find>config.plyrData</find>
+      <find>PoP_config.plyrData</find>
+      <find>keyPair</find>
+      <find>myConf.key</find>
+      <find>myConf.sock</find>
+      <find>sock</find>
+      <find>initCon</find>
+      <find>config</find>
+      <find>initConfig</find>
+      <find>returnMVP</find>
+      <find>plyrResList_new</find>
+      <find>self.matchData</find>
+      <find>self.team1Wins</find>
+      <find>importGameResult</find>
+      <find>MVP</find>
+      <find>gameRes</find>
+      <find>PlyrSignRes</find>
+      <find>plyrData</find>
+      <find>myConf</find>
+      <find>sk</find>
+      <find>args</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>gameConf</replace>
+      <replace>initConf</replace>
+      <replace>initConfig</replace>
+      <replace>config</replace>
+      <replace>plyr_data</replace>
+      <replace>plyr_data.gamePlyrs</replace>
+      <replace>config.plyrData</replace>
+      <replace>PoP_config.plyrData</replace>
+      <replace>plyrData</replace>
+      <replace>myConf</replace>
+      <replace>myConf.key</replace>
+      <replace>config.key</replace>
+      <replace>sock.sock</replace>
+      <replace>sk</replace>
+      <replace>matchData</replace>
+      <replace>team1Wins</replace>
+      <replace>self.plyrData</replace>
+      <replace>self.myConf</replace>
+      <replace>self.sk</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/PoP_launcher.py" />
+        <option value="$PROJECT_DIR$/popBlockchain/helper.py" />
+        <option value="$PROJECT_DIR$/popGame/PoP_msg.py" />
+        <option value="$PROJECT_DIR$/resources/libExamples/python_class/data_class.py" />
+        <option value="$PROJECT_DIR$/resources/libExamples/python_class/read2.py" />
+        <option value="$PROJECT_DIR$/resources/libExamples/python_class/reader1.py" />
+        <option value="$PROJECT_DIR$/popGame/PoP_sock.py" />
+        <option value="$PROJECT_DIR$/popGame/PoP_config.py" />
+        <option value="$PROJECT_DIR$/popGame/sock.py" />
+        <option value="$PROJECT_DIR$/popGame/PoPConn.py" />
+        <option value="$PROJECT_DIR$/generator/importGameRes().py" />
+        <option value="$PROJECT_DIR$/popGame/helper.py" />
+        <option value="$PROJECT_DIR$/popGame/_helper.py" />
+        <option value="$PROJECT_DIR$/popBlockchain/main.py" />
+        <option value="$PROJECT_DIR$/generator/importGameRes.py" />
+        <option value="$PROJECT_DIR$/popGame/cross_verify.py" />
+        <option value="$PROJECT_DIR$/popGame/conn.py" />
+        <option value="$PROJECT_DIR$/PoP_init.py" />
+        <option value="$PROJECT_DIR$/PoP.py" />
+        <option value="$PROJECT_DIR$/popGame/main.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-11" />
+    <option name="width" value="2414" />
+    <option name="height" value="1755" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Proof-of-Play" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Proof-of-Play" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Proof-of-Play" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Proof-of-Play" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="907ae072-54df-4dfc-94d0-81fd55a2a3e7" name="Default" comment="" />
+      <created>1547061655435</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1547061655435</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-13" y="-13" width="2762" height="1770" extended-state="6" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17690058" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="4" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/cross_verify.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generator/importGameRes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="7" column="62" lean-forward="false" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="10" column="34" lean-forward="true" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1410">
+          <caret line="30" column="19" lean-forward="true" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="12" column="15" lean-forward="false" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/sock.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="3" column="55" lean-forward="false" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="6" column="21" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generator/importGameRes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="6" column="104" lean-forward="false" selection-start-line="6" selection-start-column="104" selection-end-line="6" selection-end-column="104" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="4" column="34" lean-forward="true" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="15" column="99" lean-forward="false" selection-start-line="15" selection-start-column="99" selection-end-line="15" selection-end-column="99" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="12" column="15" lean-forward="false" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/sock.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="19" lean-forward="false" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="6" column="21" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2397">
+          <caret line="52" column="37" lean-forward="false" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/sock.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="2" column="11" lean-forward="true" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="12" column="15" lean-forward="false" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="6" column="21" lean-forward="true" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2397">
+          <caret line="52" column="37" lean-forward="false" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6909">
+          <caret line="157" column="10" lean-forward="false" selection-start-line="157" selection-start-column="10" selection-end-line="157" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1363">
+          <caret line="29" column="41" lean-forward="false" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6909">
+          <caret line="157" column="10" lean-forward="true" selection-start-line="157" selection-start-column="10" selection-end-line="157" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1363">
+          <caret line="29" column="41" lean-forward="true" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/data/parsedMatches/1533081738_4035507616_match.data">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="0" column="37687" lean-forward="false" selection-start-line="0" selection-start-column="37679" selection-end-line="0" selection-end-column="37687" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/data/genesis_matches/1533081603_4035506300_match.data">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="0" column="280" lean-forward="false" selection-start-line="0" selection-start-column="273" selection-end-line="0" selection-end-column="280" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/PoP_msg.py" />
+    <entry file="file://$PROJECT_DIR$/popBlockchain/blockchain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3149">
+          <caret line="78" column="109" lean-forward="false" selection-start-line="78" selection-start-column="106" selection-end-line="78" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/libExamples/python_class/data_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="47">
+          <caret line="1" column="21" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/libExamples/python_class/reader1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="10" column="13" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/libExamples/python_class/read2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/key.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1301">
+          <caret line="52" column="37" lean-forward="false" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/PoPConn_old.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="658">
+          <caret line="317" column="12" lean-forward="false" selection-start-line="317" selection-start-column="12" selection-end-line="317" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#21#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popBlockchain/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2521">
+          <caret line="143" column="19" lean-forward="true" selection-start-line="143" selection-start-column="19" selection-end-line="143" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/sock.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="3" column="55" lean-forward="false" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generator/importGameRes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="7" column="62" lean-forward="false" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/_helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="10" column="34" lean-forward="false" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/helper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1301">
+          <caret line="30" column="19" lean-forward="false" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="12" column="15" lean-forward="false" selection-start-line="12" selection-start-column="15" selection-end-line="12" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/1.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP_init.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="564">
+          <caret line="12" column="88" lean-forward="true" selection-start-line="12" selection-start-column="88" selection-end-line="12" selection-end-column="88" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/cross_verify.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="32" lean-forward="false" selection-start-line="0" selection-start-column="32" selection-end-line="0" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PoP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/popGame/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-626">
+          <caret line="17" column="0" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

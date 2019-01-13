@@ -49,8 +49,8 @@ class helper:
                 if len(plyrIndex) == 0: continue
                 plyrIndex += [plyrIndex[0]]
                 matches += [match['matchData']]
-                if len(matches) >= matches_for_target: break
-            if len(matches) >= matches_for_target: break
+                if len(matches) >= helper.matches_for_target: break
+            if len(matches) >= helper.matches_for_target: break
         for match in range(0, len(matches)):
             rating, dump = helper.get_rating(matches[match]['matchData'], plyrIndex[match])
             total_rating += rating

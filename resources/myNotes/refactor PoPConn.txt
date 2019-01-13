@@ -11,6 +11,8 @@ global init script, PoP_init():
 	- nodeID, keyLoc (have default), fileLoc (have default) etc
 - code interface to start blockchain (before PoPConn, simulate how a developer can use it) and PoPConn (explained in this .txt)
 
+API has to be restful because initialization is needed and cannot be directly called
+
 API to use:
 - PoP_init()
 - nodeHandshaking()
