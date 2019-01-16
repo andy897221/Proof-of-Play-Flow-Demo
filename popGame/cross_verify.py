@@ -8,13 +8,13 @@ import requests
 
 class cross_verify:
 
-    def __init__(self, plyrData, myConf, sk, config, args):
+    def __init__(self, plyrData, myConf, sk, config, blockchain_port):
         self.plyrData = plyrData
         self.myConf = myConf
         self.gameConf = config.gameConf
         self.sk = sk
         self.key = config.key
-        self.args = args
+        self.blockchain_port = blockchain_port
         return
 
     def start(self, records):
@@ -38,7 +38,7 @@ class cross_verify:
 
     def broadcastOnGameRes(self, consensusGameRes):
         sortedPubKey = [self.plyrData.plyrsPubK[i].decode("utf-8") for i in self.plyrData.gamePlyrs]
-        res =  requests.post(f'http://{self.args.blockchain_addr}/matches/new'
+        res =  requests.post(f'http://{self.blockchain_port}/matches/new'
                     , json={'plyrAddrList': sortedPubKey, 'winnerAddr': self.plyrData.plyrsPubK[consensusGameRes.returnMVP(self.plyrData)].decode("utf-8"), 'matchData': consensusGameRes.returnDict()})
         print(res.text)
         return

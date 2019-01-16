@@ -1,12 +1,10 @@
 # namespace
 class config:
-    def __init__(self, args):
-        self.gameID = args.matchID
-        self.port = 0 # my port for opening connection
-        self.bootstrapPort = 0 # port of bootstrap node that accept connection
-        self.ID = "" # my addr ID
-        self.nodeID = args.nodeID
-        self.APIPort = args.APIPort
+    def __init__(self, p2pPort, APIPort, nodeID):
+        self.port = p2pPort # my port for opening connection
+        self.ID = None # my addr ID
+        self.nodeID = nodeID
+        self.APIPort = APIPort
 
 class key:
     priKey = ""

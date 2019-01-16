@@ -1,154 +1,135 @@
+import sys
+
+from flask import Flask, request
+
+class config:
+    def __init__(self, nodeID, myPort, myIP, bootstrapNode):
+        self.knownNodesFile = f"./data/knownNodes{nodeID}.appData"
+        self.myPort = myPort
+        self.myIP = myIP
+        self.bootstrapNode = bootstrapNode
+        return
+
 from helper import *
 from blockchain import *
 from key import *
 
-import json
-import os
-from multiprocessing import Process
-import argparse
+class main:
+    app = Flask(__name__)
 
-import requests
-from flask import Flask, request
+    def __init__(self, nodeID, myPort, myIP, bootstrapNode, fileLoc, keyLoc, saveState):
+        key.pubKey, key.priKey = self.init_key(keyLoc, nodeID)
+        self.blockchain = Blockchain(fileLoc, nodeID, saveState, helper, key)
+        self.config = config(nodeID, myPort, myIP, bootstrapNode)
+        return
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-b", "--bootstrapIP", type=str, help="ip address of bootstrap node")
-parser.add_argument("-i", "--nodeID", type=int, help="the id of a node")
-parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
-parser.add_argument("-f", "--fileLoc", type=str, help="blockchain related file location")
-parser.add_argument("-s", "--saveState", type=int, help="enable saving blockchain or not (for testing mode)")
-parser.add_argument("-p", "--isLocal", type=int, help="ip of local host deployment or public ip deployment")
-args = parser.parse_args()
-args.saveState = int(args.saveState)
-args.isLocal = int(args.isLocal)
+    @staticmethod
+    def init_key(keyLoc, nodeID):
+        if not os.path.isfile(f"{keyLoc}/{nodeID}.pubKey") or not os.path.isfile(
+                f"{keyLoc}/{nodeID}.priKey"):
+            print("no key pair found, non-valid player.")
+            sys.exit()
+        else:
+            with open(f"{keyLoc}/{nodeID}.pubKey", "rb") as pubKeyF:
+                pubKey = pubKeyF.read()
+            with open(f"{keyLoc}/{nodeID}.pubKey", "rb") as priKeyF:
+                priKey = priKeyF.read()
+        return pubKey, priKey
 
-#check arg input
-if args.fileLoc is None or args.keyLoc is None or args.nodeID is None or args.saveState is None:
-    print("please supply all necessary arguments (all except bootstrapIP).")
-    exit()
+    ################ Flask related ###############
 
-def init_key():
-    if not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.pubKey") or not os.path.isfile(f"{args.keyLoc}/{args.nodeID}.priKey"):
-        print("no key pair found, non-valid player.")
-    else:
-        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as pubKeyF:
-            key.pubKey = pubKeyF.read()
-        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as priKeyF:
-            key.priKey = priKeyF.read()
-    return
+    @app.route('/status', methods=['GET'])
+    def return_status(self):
+        return json.dumps({'status': 'ok'}), 200
 
-class config:
-    knownNodesFile = f"knownNodes{args.nodeID}.appData"
+    ################# match hosting #################
 
-    myPort = 9000
-    if args.bootstrapIP is not None: bootstrapNode = args.bootstrapIP
-    else: bootstrapNode = None
+    @app.route('/matches/new', methods=['POST'])
+    def new_match(self):
+        # add new match
+        match = json.loads(request.data)
+        required = ['plyrAddrList', 'winnerAddr', 'matchData']
+        if not all(k in match for k in required):
+            return 'Missing values', 400
+        match['plyrAddrList'] = [bytes(i, encoding='utf-8') for i in match['plyrAddrList']]
+        match['winnerAddr'] = bytes(match['winnerAddr'], encoding='utf-8')
+        index = self.blockchain.new_match(match)
+        response = {'message': f'match will be added to Block {index}'}
+        print(response)
+        return json.dumps(response), 201
 
-    if args.isLocal: myIP = '127.0.0.1'
-    else: myIP = requests.get('http://ip.42.pl/raw').text
+    ################# node hosting ###############
 
-######### blockchain host ###########
+    @app.route('/nodes/register', methods=['POST'])
+    def register_nodes(self):
+        content = json.loads(request.data)
+        nodes = content["nodes"]
+        for pubKey in nodes:
+            self.blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
 
-app = Flask(__name__)
-blockchain = Blockchain(args, helper)
-@app.route('/status', methods=['GET'])
-def return_status():
-    return json.dumps({'status': 'ok'}), 200
+        with open(self.config.knownNodesFile, 'w') as knownNode:
+            knownNode.write(json.dumps(self.blockchain.nodes))
 
-################# match hosting #################
+        response = {
+            'message': 'New nodes have been added',
+            'total_nodes': nodes,
+        }
+        return json.dumps(response), 201
 
-@app.route('/matches/new', methods=['POST'])
-def new_match():
-    # add new match
-    match = json.loads(request.data)
-    required = ['plyrAddrList', 'winnerAddr', 'matchData']
-    if not all(k in match for k in required):
-        return 'Missing values', 400
-    match['plyrAddrList'] = [bytes(i, encoding='utf-8') for i in match['plyrAddrList']]
-    match['winnerAddr'] = bytes(match['winnerAddr'], encoding='utf-8')
-    index = blockchain.new_match(match)
-    response = {'message': f'match will be added to Block {index}'}
-    print(response)
-    return json.dumps(response), 201
+    @app.route('/nodes/retrieve', methods=['GET'])
+    def return_nodes(self):
+        return json.dumps({"nodes": list(self.blockchain.nodes)}), 200
 
-################# node hosting ###############
+    ############### chain hosting ##############
 
-@app.route('/nodes/register', methods=['POST'])
-def register_nodes():
-    content = json.loads(request.data)
-    nodes = content["nodes"]
-    for pubKey in nodes:
-        blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
+    @app.route('/chain', methods=['GET'])
+    def full_chain(self):
+        response = {
+            'chain': self.blockchain.chain,
+            'length': len(self.blockchain.chain),
+        }
+        return json.dumps(response), 200
 
-    with open(config.knownNodesFile, 'w') as knownNode:
-        serialize_node = ""
-        knownNode.write(json.dumps(blockchain.nodes))
+    @app.route('/chain/status', methods=['GET'])
+    def chain_status(self):
+        response = {
+            'current target': self.blockchain.current_target,
+            'current rating': self.blockchain.current_rating,
+            'difficulty': self.blockchain.difficulty,
+            'pubKey': key.pubKey
+        }
+        return json.dumps(response), 200
 
-    response = {
-        'message': 'New nodes have been added',
-        'total_nodes': nodes,
-    }
-    return json.dumps(response), 201
+    @app.route('/chain/write', methods=['POST'])
+    def consensus(self):
+        # dont have checkpoint, pass full chain
+        full_chain = json.loads(requests.data)["chain"]
+        res = self.blockchain.resolve_conflict(full_chain)
+        if res: response = {'message': 'a chain has replaced ours'}
+        else: response = {'message': 'chain has been rejected'}
+        return json.dumps(response), 201
 
-@app.route('/nodes/retrieve', methods=['GET'])
-def return_nodes():
-    return json.dumps({"nodes": list(blockchain.nodes)}), 200
+    ########### blockchain init #############
+    def load_nodes(self):
+        self.blockchain.register_node(key.pubKey, self.config.myIP)
+        if os.path.isfile(self.config.knownNodesFile):
+            with open(self.config.knownNodesFile, 'r') as content:
+                nodes = json.dumps(content)
+                for pubKey in nodes: self.blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
+            print("nodes has been initialized.")
+        else:
+            print("no known nodes needed to be added.")
 
-############### chain hosting ##############
+        if self.config.bootstrapNode is not None:
+            content = requests.get(f'http://{self.config.bootstrapNode}/nodes/retrieve').text
+            requested_nodes = json.loads(content)['nodes']
+            for pubKey in requested_nodes: self.blockchain.register_node(pubKey.encode('utf-8'), requested_nodes[pubKey])
+            print("new nodes has been added from bootstrap node.")
+        self.blockchain.saveState()
+        return
 
-@app.route('/chain', methods=['GET'])
-def full_chain():
-    response = {
-        'chain': blockchain.chain,
-        'length': len(blockchain.chain),
-    }
-    return json.dumps(response), 200
-
-@app.route('/chain/status', methods=['GET'])
-def chain_status():
-    response = {
-        'current target': blockchain.current_target,
-        'current rating': blockchain.current_rating,
-        'difficulty': blockchain.difficulty,
-        'pubKey': blockchain.myPubKey
-    }
-    return json.dumps(response), 200
-
-@app.route('/chain/write', methods=['POST'])
-def consensus():
-    # dont have checkpoint, pass full chain
-    full_chain = json.loads(requests.data)["chain"]
-    res = blockchain.resolve_conflict(full_chain)
-    if res: response = {'message': 'a chain has replaced ours'}
-    else: response = {'message': 'chain has been rejected'}
-    return json.dumps(response), 201
-
-########### blockchain init #############
-def load_nodes():
-    blockchain.register_node(key.pubKey, config.myIP)
-    if os.path.isfile(config.knownNodesFile):
-        with open(config.knownNodesFile, 'r') as content:
-            nodes = json.dumps(content)
-            for pubKey in nodes: blockchain.register_node(pubKey.encode('utf-8'), nodes[pubKey])
-        print("nodes has been initialized.")
-    else:
-        print("no known nodes needed to be added.")
-
-    if config.bootstrapNode is not None:
-        content = requests.get(f'http://{config.bootstrapNode}/nodes/retrieve').text
-        requested_nodes = json.loads(content)['nodes']
-        for pubKey in requested_nodes: blockchain.register_node(pubKey.encode('utf-8'), requested_nodes[pubKey])
-        print("new nodes has been added from bootstrap node.")
-    blockchain.saveState()
-    return
-
-def setup_app(app):
-    init_key()
-    load_nodes()
-
-def main():
-    setup_app(app)
-    app.run(host='0.0.0.0', port=config.myPort)
+    def run_app(self):
+        self.load_nodes()
+        self.app.run(host='0.0.0.0', port=self.config.myPort)
 
 # Process(target=run_server, args=()).start()
-if __name__ == "__main__":
-    main()

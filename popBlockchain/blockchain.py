@@ -1,48 +1,44 @@
-import hashlib
 import json
 from time import time
 import time
 import os
-import pickle
 
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA256
 from Crypto.Signature import pkcs1_15
 
-from key import *
-
 class Blockchain:
     # longest chain wins because player wants their data asap, so they will agree
-    def __init__(self, args, helper):
+    def __init__(self, fileLoc, nodeID, saveState, helper, key):
         self.chain = []
         self.current_matches = []
         self.current_target = 0
         self.current_rating = 0
         self.difficulty = 5
         self.nodes = dict()
-        self.args = args
+        self.fileLoc = fileLoc
+        self.nodeID = nodeID
+        self.saveState = saveState
         self.helper = helper
+        self.key = key
 
         # import first 500 matches, assume 50 players (requirement to become a miner = played 10 matches)
-        if not os.path.isfile(f"{self.args.fileLoc}/{self.args.nodeID}.blockchain"):
+        if not os.path.isfile(f"{self.fileLoc}/{self.nodeID}.blockchain"):
             self.current_target = -1
-            with open(f"{self.args.keyLoc}/{self.args.nodeID}.pubKey", "r") as f:
-                key.pubKey = f.read()
-            with open(f"{self.args.fileLoc}/genesis_block.data", "r") as f:
+            with open(f"{self.fileLoc}/genesis_block.data", "r") as f:
                 data = json.loads(f.read())
                 for i in data: self.new_match(i, genesis=True)
             self.proof_of_play(genesis=True)
         else:
-            with open(f"{self.args.fileLoc}/{self.args.nodeID}.blockchain", "r") as f:
+            with open(f"{self.fileLoc}/{self.nodeID}.blockchain", "r") as f:
                 data = json.loads(f.read())
                 self.chain = data["chain"]
                 self.current_matches = data["current_matches"]
                 self.current_target = data["current_target"]
                 self.current_rating = data["current_rating"]
                 self.difficulty = data["difficulty"]
-                key.pubKey = data["myPubKey"].encode("utf-8")
                 self.nodes = self._nodeStrToBytes(data["nodes"])
-        if self.args.saveState: self.saveState()
+        if self.saveState: self.saveState()
 
     def register_node(self, pubKey, addr):
         self.nodes[pubKey] = addr
@@ -52,8 +48,8 @@ class Blockchain:
         # find if current matches score > target
         # find if there exists one with this player as mvp
         isMVP = False
-        self.current_rating = self.helper.get_total_rating(self.current_matches, key.pubKey)
-        isMVP = self.helper.is_any_MVP(self.current_matches, key.pubKey)
+        self.current_rating = self.helper.get_total_rating(self.current_matches, self.key.pubKey)
+        isMVP = self.helper.is_any_MVP(self.current_matches, self.key.pubKey)
         print(f"Target: {self.current_target}, Current Total Rating: {self.current_rating}, Is MVP: {isMVP}.")
         if (self.current_rating < self.current_target) or ((not isMVP) and (not genesis)): return
         print("Target reached.")
@@ -76,10 +72,10 @@ class Blockchain:
     def new_block_init(self, matches, genesis=False, block={}):
         self.current_matches = matches
         if not genesis:
-            self.current_target = self.helper.get_target_rating(self.last_block().current_matches, key.pubKey, self.difficulty)
+            self.current_target = self.helper.get_target_rating(self.last_block().current_matches, self.key.pubKey, self.difficulty)
         else:
-            self.current_target = self.helper.get_target_rating(block["matches"], key.pubKey, self.difficulty)
-        self.current_rating = self.helper.get_total_rating(self.current_matches, key.pubKey)
+            self.current_target = self.helper.get_target_rating(block["matches"], self.key.pubKey, self.difficulty)
+        self.current_rating = self.helper.get_total_rating(self.current_matches, self.key.pubKey)
         return
 
     def new_block(self, genesis=False):
@@ -92,16 +88,16 @@ class Blockchain:
             'popTarget': self.current_target,
             'popRating': self.current_rating,
             'difficulty': self.difficulty,
-            'plyrPubKey': key.pubKey,
+            'plyrPubKey': self.key.pubKey,
             # can the state of sign restart from save?
-            'signed_previousHash': pkcs1_15.new(RSA.import_key(key.priKey)).sign(previousHash),
+            'signed_previousHash': pkcs1_15.new(RSA.import_key(self.key.priKey)).sign(previousHash),
             'previousHash': previousHash.hexdigest()
         }
         self.new_block_init(matches=[], genesis=genesis, block=block)
         self.chain.append(block)
         print(f"new block created. next target: {self.current_target}")
-        if self.args.saveState: self.saveState()
-        proof_of_play()
+        if self.saveState: self.saveState()
+        self.proof_of_play()
         return block
 
     def new_match(self, match, genesis=False):
@@ -110,7 +106,7 @@ class Blockchain:
             'winnerAddr': match['winnerAddr'],
             'matchData': match['matchData']
         })
-        if self.args.saveState: self.saveState()
+        if self.saveState: self.saveState()
         # print('new match has been added. winner: ...{}'.format(self.current_matches[-1]["winnerAddr"].split("\n")[1][-10:-1]))
         if not genesis: self.proof_of_play()
         if genesis: return 1
@@ -127,7 +123,7 @@ class Blockchain:
             if block['previous_hash'] != self.hash(last_block).hexdigest():
                 return False
 
-            if not self.valid_PoP(block.current_matches):
+            if not self.valid_PoP(block.matches, block.plyrPubKey, block.popTarget):
                 return False
 
             # validate block writer
@@ -167,22 +163,25 @@ class Blockchain:
 
     def resolve_conflict(self, chain):
         if len(chain) > len(self.chain):
-            if self.valid_chain(self, chain):
+            if self.valid_chain(chain):
                 self.replace_chain(chain)
             
     def saveState(self):
         convertedNodes = self._nodeBytesToStr(self.nodes)
-        data = json.dumps({"chain": self.chain, "current_matches": self.current_matches, "current_target": self.current_target, "current_rating": self.current_rating, "difficulty": self.difficulty, "myPubKey": key.pubKey.decode('utf-8'), "nodes": convertedNodes})
-        with open(f"{self.args.fileLoc}/{self.args.nodeID}.blockchain", "w") as f:
+        data = json.dumps({"chain": self.chain, "current_matches": self.current_matches, "current_target": self.current_target
+                              , "current_rating": self.current_rating, "difficulty": self.difficulty, "nodes": convertedNodes})
+        with open(f"{self.fileLoc}/{self.nodeID}.blockchain", "w") as f:
             f.write(data)
         return
 
-    def _nodeBytesToStr(self, nodes):
+    @staticmethod
+    def _nodeBytesToStr(nodes):
         convertedNodes = dict()
         for node in nodes: convertedNodes[node.decode('utf-8')] = nodes[node]
         return convertedNodes
 
-    def _nodeStrToBytes(self, nodes):
+    @staticmethod
+    def _nodeStrToBytes(nodes):
         convertedNodes = dict()
         for node in nodes: convertedNodes[node.encode('utf-8')] = nodes[node]
         return convertedNodes

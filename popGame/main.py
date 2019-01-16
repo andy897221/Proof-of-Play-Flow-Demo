@@ -1,20 +1,8 @@
 from py2p import mesh
-import argparse, sys, json, os
+import sys, json
 from concurrent.futures import ThreadPoolExecutor
 
 from flask import Flask, request
-
-# script argument parsing
-parser = argparse.ArgumentParser()
-parser.add_argument("-m", "--matchID", type=str, help="the match filel name to join for this player (node)")
-parser.add_argument("-i", "--nodeID", type=int, help="the given node ID")
-parser.add_argument("-p", "--port", type=int, help="the opening port number for p2p connection")
-parser.add_argument("-q", "--APIPort", type=int, help="the API port")
-parser.add_argument("-b", "--bootstrap", type=int, help="whether this node is a bootstrap node")
-parser.add_argument("-n", "--playerCount", type=int, help="the number of players in the match (for bootstrap node)")
-parser.add_argument("-a", "--blockchain_addr", type=str, help="the address of the blockchain")
-parser.add_argument("-k", "--keyLoc", type=str, help="the directory of the pri and pub key")
-args = parser.parse_args()
 
 class plyrData:
     gamePlyrs = []  # list of player p2p node id with same game match id
@@ -30,27 +18,30 @@ from cross_verify import *
 
 executor = ThreadPoolExecutor(2)
 class main:
-    myConf = config(args)
+    app = Flask(__name__)
 
-    def __init__(self, args):
-        self.myConf = config(args)
+    def __init__(self, nodeID, gamePort, keyLoc, APIPort, blockchain_port):
+        self.nodeID = nodeID
+        self.keyLoc = keyLoc
+        self.myConf = config(gamePort, APIPort, self.nodeID)
         self.sk = sock(self.myConf, gameConf, key, plyrData)
-        self.cross_verify = cross_verify(plyrData, self.myConf, self.sk, config, args)
+        self.cross_verify = cross_verify(plyrData, self.myConf, self.sk, config, blockchain_port)
+        self.setup_app()
         return
 
     ################### conn hosting #########################
 
-    app = Flask(__name__)
-
     @app.route('/conn', methods=['GET'])
-    def establish_connection_with():
+    def establish_connection_with(self):
         content = json.loads(request.data)
-        bootstrap = content["bootstrap"]
+        bootstrap = content["bootstrap"] # bootstrap addr string
+        matchID = content["matchID"]
 
-        if not args.bootstrap:
-            handshakingMsg = {"handshaking": 1, "matchID": myConf.gameID, "pubKey": pickle.dumps(key.pubKey)}
-            print("Handshaking with mesh network... match ID: " + str(handshakingMsg["matchID"]))
-            sk.sock.send(handshakingMsg)
+        self.sk.sock.connect(bootstrap.split(":")[0], bootstrap.split(":")[1])
+        handshakingMsg = {"handshaking": 1, "matchID": matchID, "pubKey": pickle.dumps(key.pubKey)}
+        print("Handshaking with mesh network... match ID: " + str(handshakingMsg["matchID"]))
+        self.sk.sock.send(handshakingMsg)
+
         connTimer = 0
         while True:
             if bootstrap in plyrData.gamePlyrs: return json.dumps({'msg': f'connection with {bootstrap} established'}), 200
@@ -59,7 +50,7 @@ class main:
             time.sleep(1)
 
     @app.route('/verify', methods=['GET'])
-    def verify():
+    def verify(self):
         content = json.loads(request.data)
         gameRes = content["gameRec"]
 
@@ -72,29 +63,25 @@ class main:
 
     ############ conn hosting init #################
 
-    def setup_app():
-        if args.bootstrap is not None: myConf.bootstrapPort = args.bootstrap
-        myConf.port = args.port
-
+    def setup_app(self):
         try:
-            sk.sock = mesh.MeshSocket('0.0.0.0', myConf.port)
+            self.sk.sock = mesh.MeshSocket('0.0.0.0', self.myConf.port)
         except OSError:
             print("IP and Port pair has already existed")
             sys.exit()
 
-        if args.bootstrap is None: sk.sock.connect('127.0.0.1', myConf.bootstrapPort)
+        print("socket established, ready for connection.")
         time.sleep(1)
-        myConf.ID = sk.sock.id
+        self.myConf.ID = self.sk.sock.id
 
-        with open(f"{args.keyLoc}/{args.nodeID}.pubKey", "rb") as pubKeyF:
+        with open(f"{self.keyLoc}/{self.nodeID}.pubKey", "rb") as pubKeyF:
             key.pubKey = pubKeyF.read()
-        with open(f"{args.keyLoc}/{args.nodeID}.priKey", "rb") as priKeyF:
+        with open(f"{self.keyLoc}/{self.nodeID}.priKey", "rb") as priKeyF:
             key.priKey = priKeyF.read()
 
-        print("Node " + str(myConf.ID) + " initialized.")
+        print(f"Node {self.myConf.ID} initialized. p2p socket port {self.myConf.port} is running.")
         return
 
-    def main():
-        executor.submit(sk.readHandler)
-        setup_app()
-        executor.submit(app.run(host='0.0.0.0', port=myConf.APIPort))
+    def run_app(self):
+        executor.submit(self.sk.readHandler)
+        executor.submit(self.app.run(host='0.0.0.0', port=self.myConf.APIPort))
