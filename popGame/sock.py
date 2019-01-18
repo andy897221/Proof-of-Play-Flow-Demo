@@ -13,7 +13,7 @@ class sock:
         while True:
             if self.gameConf.matchCompleted: break
 
-            msg = sock.recv()
+            msg = self.sock.recv()
             if msg is not None:
                 decodedMsg = msg.packets[1]
                 if "handshaking" in decodedMsg and "matchID" in decodedMsg and "pubKey" in decodedMsg:
@@ -21,17 +21,17 @@ class sock:
                         print("match is full".format(str(msg.sender)))
                         msg.reply({"gameOn": 1})
                     else:
-                        if decodedMsg["matchID"] == self.myConf.gameID and msg.sender not in self.gameConf.gamePlyrs:
+                        if decodedMsg["matchID"] == self.gameConf.matchID and msg.sender not in self.plyrData.gamePlyrs:
                             pubKey = pickle.loads(decodedMsg["pubKey"])
-                            self.gameConf.gamePlyrs += [msg.sender]
+                            self.plyrData.gamePlyrs += [msg.sender]
                             self.plyrData.plyrsPubK[msg.sender] = pubKey
                         print("connection from player "+str(msg.sender)+", match ID: "+decodedMsg["matchID"])
-                        msg.reply({"ack": 1, "matchID": self.myConf.gameID, "pubKey": pickle.dumps(self.key.pubKey)})
+                        msg.reply({"ack": 1, "matchID": self.gameConf.matchID, "pubKey": pickle.dumps(self.key.pubKey)})
 
                 if "ack" in decodedMsg and "matchID" in decodedMsg and "pubKey" in decodedMsg:
-                    if decodedMsg["matchID"] == self.myConf.gameID and msg.sender not in self.gameConf.gamePlyrs:
+                    if decodedMsg["matchID"] == self.gameConf.matchID and msg.sender not in self.plyrData.gamePlyrs:
                         pubKey = pickle.loads(decodedMsg["pubKey"])
-                        self.gameConf.gamePlyrs += [msg.sender]
+                        self.plyrData.gamePlyrs += [msg.sender]
                         self.plyrData.plyrsPubK[msg.sender] = pubKey
                     print("connection established with player "+str(msg.sender)+"match ID: "+decodedMsg["matchID"])
 
@@ -50,7 +50,7 @@ class sock:
                     self.plyrData.plyrsSignRes[msg.sender][msg.sender] = signedGameResHash
                     self.plyrData.plyrsResHash[msg.sender][msg.sender] = gameResRehash
 
-                    self.myConf.sock.send({"pickleGameResRehash": decodedMsg["pickleGameResRehash"], "exchangeSignedGameResHash": 1, "playerID": msg.sender
+                    self.sock.send({"pickleGameResRehash": decodedMsg["pickleGameResRehash"], "exchangeSignedGameResHash": 1, "playerID": msg.sender
                     , "pickleSignedGameResHash": decodedMsg["pickleSignedGameResHash"]})
 
                 if "exchangeSignedGameResHash" in decodedMsg:

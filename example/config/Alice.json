@@ -1,0 +1,1 @@
+{"nodeID": "Alice", "game_port": 1000, "blockchain_port": 1001, "API_port": 1002, "blockchain_bootstrap_ip": null, "keyLoc": "./config/nodeKey", "blockchainLoc": " "}

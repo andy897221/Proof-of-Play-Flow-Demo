@@ -13,3 +13,6 @@ class key:
 class gameConf:
     gameOn = False # lock adding players across the global
     matchCompleted = False
+
+    def __init__(self, matchID):
+        self.matchID = str(matchID)

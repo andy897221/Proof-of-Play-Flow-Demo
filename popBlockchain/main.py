@@ -10,9 +10,9 @@ class config:
         self.bootstrapNode = bootstrapNode
         return
 
-from helper import *
-from blockchain import *
-from key import *
+from popBlockchain.helper import *
+from popBlockchain.blockchain import *
+from popBlockchain.key import *
 
 class main:
     app = Flask(__name__)

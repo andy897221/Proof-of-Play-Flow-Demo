@@ -8,12 +8,12 @@ import requests
 
 class cross_verify:
 
-    def __init__(self, plyrData, myConf, sk, config, blockchain_port):
+    def __init__(self, plyrData, myConf, key, gameConf, sk, blockchain_port):
         self.plyrData = plyrData
         self.myConf = myConf
-        self.gameConf = config.gameConf
+        self.gameConf = gameConf
         self.sk = sk
-        self.key = config.key
+        self.key = key
         self.blockchain_port = blockchain_port
         return
 

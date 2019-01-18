@@ -1,15 +1,12 @@
 import json
-import helper
 
-def importGameResult(match_file, plyrList):
+def importGameResult(fileContent, plyrList):
     # format the matchData as such:
     # matchData[0] = {"plyrPubKey": {"gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min", "isRadiant"}}
     # first item of matchData is a dictionary of rating dictionary of a player
     # second item of matchData is radiantWins, a boolean value
 
-    with open(f"{match_file}", "r") as f:
-        content = f.read()
-    content = json.loads(content)
+    content = json.loads(fileContent)
 
     matchData = dict()
     radiantWins = content["radiant_win"]
@@ -24,4 +21,4 @@ def importGameResult(match_file, plyrList):
 
     matchData = [matchData, radiantWins]
 
-    return helper.plyrResList(matchData)
+    return matchData
