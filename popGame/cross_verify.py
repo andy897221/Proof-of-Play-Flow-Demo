@@ -18,8 +18,8 @@ class cross_verify:
         return
 
     def start(self, records):
-        print(self.cross_verify(records)[0])
-        return
+        consensusGameRes, isMVP = self.cross_verify(records)
+        return consensusGameRes, isMVP
 
     def crossVerifyGameRes(self):
         # check if every signed is valid
@@ -39,7 +39,9 @@ class cross_verify:
     def broadcastOnGameRes(self, consensusGameRes):
         sortedPubKey = [self.plyrData.plyrsPubK[i].decode("utf-8") for i in self.plyrData.gamePlyrs]
         res =  requests.post(f'http://{self.blockchain_port}/matches/new'
-                    , json={'plyrAddrList': sortedPubKey, 'winnerAddr': self.plyrData.plyrsPubK[consensusGameRes.returnMVP(self.plyrData)].decode("utf-8"), 'matchData': consensusGameRes.returnDict()})
+                    , json={'plyrAddrList': sortedPubKey,
+                            'winnerAddr': self.plyrData.plyrsPubK[consensusGameRes.returnMVP(self.plyrData)].decode("utf-8"),
+                            'matchData': consensusGameRes.returnDict()})
         print(res.text)
         return
 
@@ -58,10 +60,10 @@ class cross_verify:
         MVP = consensusGameRes.returnMVP(self.plyrData)
         if self.myConf.ID == MVP:
             print("I am the MVP {}, broadcasting data...".format(MVP))
-            self.broadcastOnGameRes(consensusGameRes)
+            # self.broadcastOnGameRes(consensusGameRes)
         else:
             print("I am not the MVP, the MVP is {}".format(MVP))
-        return
+        return consensusGameRes, self.myConf.ID == MVP
 
     def broadcastGameHash(self, records):
         if self.myConf.ID not in self.plyrData.plyrsSignRes: self.plyrData.plyrsSignRes[self.myConf.ID] = {}
@@ -88,25 +90,25 @@ class cross_verify:
         timerOn, curTime = time.time(), time.time()
         while curTime - timerOn < 60:
             flag = True
-            for playerID in gameRes.plyrsSignRes:
-                if len(gameRes.plyrsSignRes[playerID]) != len(self.plyrData.gamePlyrs):
+            for playerID in self.plyrData.plyrsSignRes:
+                if len(self.plyrData.plyrsSignRes[playerID]) != len(self.plyrData.gamePlyrs):
                     flag = False
             if flag: break
             time.sleep(1)
             curTime = time.time()
-        if curTime - timerOn >= 60: return "shared turn time out", False
+        if curTime - timerOn >= 60: return None, None
 
         # shared turn phase 2: broadcast game res, and verify
         self.broadcastGameRes()
         timerOn, curTime = time.time(), time.time()
         while curTime - timerOn < 60:
-            if len(gameRes.plyrsRes) == len(self.plyrData.gamePlyrs): break
+            if len(self.plyrData.plyrsRes) == len(self.plyrData.gamePlyrs): break
             time.sleep(1)
             curTime = time.time()
-        if curTime - timerOn >= 60: return "shared turn time out", False
+        if curTime - timerOn >= 60: return None, None
         matchVerified = self.crossVerifyGameRes()
 
-        if not matchVerified: return "match verification failed", False
-        self.consensusOnGameRes()
+        if not matchVerified: return None, None
+        consensusGameRes, isMVP = self.consensusOnGameRes()
         self.gameConf.matchCompleted = True
-        return "match verification and consensus succeeded", True
+        return consensusGameRes, isMVP

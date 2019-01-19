@@ -11,6 +11,11 @@ class plyrData:
     plyrsRes = {}
     plyrsPubK = {}
 
+    @staticmethod
+    def add_gamePlyrs(plyrSock):
+        plyrData.gamePlyrs += [plyrSock]
+        plyrData.gamePlyrs = sorted(plyrData.gamePlyrs)
+
 from popGame.sock import *
 from popGame.config import *
 from popGame.helper import *
@@ -49,6 +54,7 @@ class main:
         with open(f"{self.from_path}/{self.keyLoc}/{self.nodeID}.priKey", "rb") as priKeyF:
             key.priKey = priKeyF.read()
         plyrData.plyrsPubK[self.myConf.ID] = key.pubKey
+        plyrData.add_gamePlyrs(self.sk.sock.id)
 
         print(f"Node {self.myConf.ID} initialized. p2p socket port {self.myConf.port} is running.")
         return
@@ -77,16 +83,17 @@ class main:
                 if connTimer >= 5: return "connection failed.", 408
                 time.sleep(1)
 
-        @app.route('/verify', methods=['GET'])
+        @app.route('/verify', methods=['POST'])
         def verify():
             content = json.loads(request.data)
             gameRes = content["gameRec"]
 
-            if len(plyrData.gamePlyrs) != len(gameRes["players"]):
-                return json.dumps({'msg', f'number of players of the match doesnt match users of the p2p'}), 400
+            if len(plyrData.plyrsPubK) != len(gameRes[0]):
+                return f'number of players ({len(gameRes[0])}) of the match doesnt match users of the p2p', 400
 
-            Thread(target=cross_verify.start, args=(plyrResList(gameRes, self.winnerFunc),)).start()
-            return "match is cross-verifying..."
+            # Thread(target=self.cross_verify.start, args=(plyrResList(gameRes, self.winnerFunc),)).start()
+            gameRec, isMVP = self.cross_verify.start(records=plyrResList(gameRes, self.winnerFunc))
+            return json.dumps({"gameRec": gameRec.returnDict(), "isMVP": isMVP}), 200
 
         @app.route('/plyrList', methods=['GET'])
         def return_plyrList():
@@ -95,7 +102,7 @@ class main:
         @app.route('/test', methods=['POST'])
         def test():
             print(request.data)
-            return "received data"
+            return "received data", 200
 
         app.run(host='0.0.0.0', port=self.myConf.APIPort)
 

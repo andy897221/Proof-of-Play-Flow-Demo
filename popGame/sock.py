@@ -23,7 +23,7 @@ class sock:
                     else:
                         if decodedMsg["matchID"] == self.gameConf.matchID and msg.sender not in self.plyrData.gamePlyrs:
                             pubKey = pickle.loads(decodedMsg["pubKey"])
-                            self.plyrData.gamePlyrs += [msg.sender]
+                            self.plyrData.add_gamePlyrs(msg.sender)
                             self.plyrData.plyrsPubK[msg.sender] = pubKey
                         print("connection from player "+str(msg.sender)+", match ID: "+decodedMsg["matchID"])
                         msg.reply({"ack": 1, "matchID": self.gameConf.matchID, "pubKey": pickle.dumps(self.key.pubKey)})
@@ -31,7 +31,7 @@ class sock:
                 if "ack" in decodedMsg and "matchID" in decodedMsg and "pubKey" in decodedMsg:
                     if decodedMsg["matchID"] == self.gameConf.matchID and msg.sender not in self.plyrData.gamePlyrs:
                         pubKey = pickle.loads(decodedMsg["pubKey"])
-                        self.plyrData.gamePlyrs += [msg.sender]
+                        self.plyrData.add_gamePlyrs(msg.sender)
                         self.plyrData.plyrsPubK[msg.sender] = pubKey
                     print("connection established with player "+str(msg.sender)+"match ID: "+decodedMsg["matchID"])
 

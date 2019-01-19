@@ -30,6 +30,7 @@ class handler:
         self.blockchain_port = config["blockchain_port"]
         self.keyLoc = config["keyLoc"]
         self.blockchainLoc = config["blockchainLoc"]
+        self.blockchain_bootstrap_ip = config["blockchain_bootstrap_ip"]
         self.winnerFunc = winnerFunc
         return
 
@@ -42,22 +43,35 @@ class handler:
             return func_wrapper
         return user_func
 
+    def run_blockchain(self, saveState):
+        # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
+        # myIP: provide worldwide IP if the blockchain deployment is global, local IP otherwise
+        # the above two argument is disabled for simplify features
+
+        # change genesis block, current format matchData {pubKey: {rating, ...}, ...}
+        # re generate Bob config file, blockchain_bootstrap_ip should be included
+        blockchain = \
+            _blockchain.main(self.nodeID, self.blockchain_port, self.blockchain_bootstrap_ip, self.blockchainLoc, self.keyLoc, saveState)
+        blockchain.run_app()
+
     def game_conn_to(self, bootstrap_addr):
         # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
         return requests.post(f"http://127.0.0.1:{self.api_port}/conn",
-                      json={'bootstrap': bootstrap_addr}).content
+                      json={'bootstrap': bootstrap_addr}).text
 
     def verify_game(self, gameRec):
         # how do I receive the result? can I make this a promise?
-        return requests.post(f"http://127.0.0.1:{self.api_port}/verify",
-                      data={'gameRec':gameRec})
+        res = requests.post(f"http://127.0.0.1:{self.api_port}/verify",
+                      json={'gameRec':gameRec})
+        if res.status_code == 200:
+            res = res.json()
+            return res["gameRec"], res["isMVP"]
+        else:
+            print(res.text)
+            return None, None
 
     def return_plyrList(self):
         return eval(requests.get(f"http://127.0.0.1:{self.api_port}/plyrList").text)
 
-    def run_blockchain(self, saveState, bootstrap_addr, myIP):
-        # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
-        # myIP: provide worldwide IP if the blockchain deployment is global, local IP otherwise
-        blockchain = \
-            _blockchain.main(self.nodeID, self.blockchain_port, myIP, bootstrap_addr, self.blockchainLoc, self.keyLoc, saveState)
-        blockchain.run_app()
+    def terminate(self):
+        raise SystemExit

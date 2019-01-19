@@ -3,10 +3,10 @@ import sys
 from flask import Flask, request
 
 class config:
-    def __init__(self, nodeID, myPort, myIP, bootstrapNode):
+    def __init__(self, nodeID, myPort, bootstrapNode):
         self.knownNodesFile = f"./data/knownNodes{nodeID}.appData"
         self.myPort = myPort
-        self.myIP = myIP
+        self.myIP = "127.0.0.1"
         self.bootstrapNode = bootstrapNode
         return
 
@@ -17,10 +17,10 @@ from popBlockchain.key import *
 class main:
     app = Flask(__name__)
 
-    def __init__(self, nodeID, myPort, myIP, bootstrapNode, fileLoc, keyLoc, saveState):
+    def __init__(self, nodeID, myPort, bootstrapNode, fileLoc, keyLoc, saveState):
         key.pubKey, key.priKey = self.init_key(keyLoc, nodeID)
         self.blockchain = Blockchain(fileLoc, nodeID, saveState, helper, key)
-        self.config = config(nodeID, myPort, myIP, bootstrapNode)
+        self.config = config(nodeID, myPort, bootstrapNode)
         return
 
     @staticmethod

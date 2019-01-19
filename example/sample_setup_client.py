@@ -4,13 +4,13 @@ import PoP
 import myGetMVP
 
 # setupJSON needs to be defined if this is the first time the nodeID (user) initialize PoP
-nodeID, matchID = "Alice", 1
+nodeID = "Bob"
 setupJSON = {
     "nodeID": str(nodeID),
-    "game_port": 1000,
-    "blockchain_port": 1001,
-    "API_port": 1002,
-    "blockchain_bootstrap_ip": None,
+    "game_port": 1003,
+    "blockchain_port": 1004,
+    "API_port": 1005,
+    "blockchain_bootstrap_ip": "127.0.0.1:1001",
     # not full parameters are configurated, default paramters will be intialized if it doesn't present in setupJSON
 }
 PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, setupJSON=setupJSON)
