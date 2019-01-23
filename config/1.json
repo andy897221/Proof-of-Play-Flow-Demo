@@ -1,1 +1,0 @@
-{"nodeID": "1", "game_port": "1000", "blockchain_addr": "0:0:0:0:1001", "API_port": "1002", "blockchain_bootstrap_ip": null, "keyLoc": "./config/nodeKey", "blockchainLoc": "./popBlockchain/data"}

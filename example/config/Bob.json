@@ -1,1 +1,1 @@
-{"nodeID": "Bob", "game_port": 1003, "blockchain_port": 1004, "API_port": 1005, "blockchain_bootstrap_ip": null, "keyLoc": "./config/nodeKey", "blockchainLoc": " "}
+{"nodeID": "Bob", "game_port": 1003, "blockchain_port": 1004, "API_port": 1005, "blockchain_bootstrap_ip": "127.0.0.1:1001", "keyLoc": "./config/nodeKey", "blockchainLoc": "./config/blockchain"}

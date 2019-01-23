@@ -1,7 +1,7 @@
 import PoP_init as _init
 import popGame.main as _conn
 import popBlockchain.main as _blockchain
-import json, os, sys, requests
+import json, os, sys, requests, pickle
 
 def path(file):
     return '/'.join(os.path.abspath(file).split("\\")[:-1])
@@ -38,21 +38,24 @@ class handler:
         def user_func(func):
             def func_wrapper():
                 conn = \
-                    _conn.main(self.nodeID, self.from_path, matchID, self.winnerFunc, self.game_port, self.keyLoc, self.api_port, self.blockchain_port)
+                    _conn.main(self.nodeID, self.from_path, matchID, self.winnerFunc, self.game_port,
+                               self.keyLoc, self.api_port, self.blockchain_port)
                 conn.run_app(func)
             return func_wrapper
         return user_func
 
-    def run_blockchain(self, saveState):
-        # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
-        # myIP: provide worldwide IP if the blockchain deployment is global, local IP otherwise
-        # the above two argument is disabled for simplify features
-
-        # change genesis block, current format matchData {pubKey: {rating, ...}, ...}
-        # re generate Bob config file, blockchain_bootstrap_ip should be included
-        blockchain = \
-            _blockchain.main(self.nodeID, self.blockchain_port, self.blockchain_bootstrap_ip, self.blockchainLoc, self.keyLoc, saveState)
-        blockchain.run_app()
+    def run_blockchain(self, saveState, rating_func):
+        def user_func(func):
+            def func_wrapper():
+                # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
+                # myIP: provide worldwide IP if the blockchain deployment is global, local IP otherwise
+                # the above two argument is disabled for simplify features
+                blockchain = \
+                    _blockchain.main(self.nodeID, self.blockchain_port, self.blockchain_bootstrap_ip, self.blockchainLoc,
+                                     self.keyLoc, saveState, rating_func)
+                blockchain.run_app(func)
+            return func_wrapper
+        return user_func
 
     def game_conn_to(self, bootstrap_addr):
         # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
@@ -62,16 +65,27 @@ class handler:
     def verify_game(self, gameRec):
         # how do I receive the result? can I make this a promise?
         res = requests.post(f"http://127.0.0.1:{self.api_port}/verify",
-                      json={'gameRec':gameRec})
+                      data=pickle.dumps(gameRec))
         if res.status_code == 200:
-            res = res.json()
-            return res["gameRec"], res["isMVP"]
+            res = pickle.loads(res.content)
+            return res["gameRec"], res["MVP"]
         else:
-            print(res.text)
+            print(res)
             return None, None
 
+    def broadcast_gameRec(self):
+        requests.post(f"http://127.0.0.1:{self.api_port}/broadcast")
+        return
+
+    def _direct_send_match(self, data):
+        requests.post(f'http://127.0.0.1:{self.blockchain_port}/matches/new', data=pickle.dumps(data))
+        return
+
     def return_plyrList(self):
-        return eval(requests.get(f"http://127.0.0.1:{self.api_port}/plyrList").text)
+        return pickle.loads(requests.get(f"http://127.0.0.1:{self.api_port}/plyrList").content)
+
+    def return_chain_status(self):
+        return pickle.loads(requests.get(f"http://127.0.0.1:{self.blockchain_port}/chain/status").content)
 
     def terminate(self):
         raise SystemExit

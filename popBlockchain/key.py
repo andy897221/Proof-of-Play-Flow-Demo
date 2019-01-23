@@ -1,3 +1,3 @@
 class key:
-    pubKey = ""
-    priKey = ""
+    pubKey = b""
+    priKey = b""

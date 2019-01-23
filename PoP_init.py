@@ -21,7 +21,7 @@ def init(from_path, nodeID=1, setupJSON=None):
         "API_port": 1002,
         "blockchain_bootstrap_ip": None,
         "keyLoc": "./config/nodeKey",
-        "blockchainLoc": " ",
+        "blockchainLoc": "./config/blockchain",
     }
     if setupJSON is None:
         print("input the value and press enter, press enter directly to use the default value:")
@@ -38,7 +38,8 @@ def init(from_path, nodeID=1, setupJSON=None):
 
     if not os.path.exists(f"{from_path}/config"): os.makedirs(f"{from_path}/config")
     if not os.path.exists(f"{from_path}/config/nodeKey"): os.makedirs(f"{from_path}/config/nodeKey")
-    if not os.path.isfile(f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.priKey") or not os.path.isfile(
+    if not os.path.exists(f"{from_path}/config/blockchain"): os.makedirs(f"{from_path}/config/blockchain")
+    if not os.path.isfile(f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.pubKey") or not os.path.isfile(
             f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.priKey"): init_key(from_path, setup_frame)
     with open(f"./config/{setup_frame['nodeID']}.json", "w") as f:
         f.write(json.dumps(setup_frame))

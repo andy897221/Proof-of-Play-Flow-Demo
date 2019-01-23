@@ -4,27 +4,23 @@ from Crypto.Signature import pkcs1_15
 import rehash
 import time, pickle
 
-import requests
-
 class cross_verify:
 
-    def __init__(self, plyrData, myConf, key, gameConf, sk, blockchain_port):
+    def __init__(self, plyrData, myConf, key, gameConf, sk):
         self.plyrData = plyrData
         self.myConf = myConf
         self.gameConf = gameConf
         self.sk = sk
         self.key = key
-        self.blockchain_port = blockchain_port
         return
 
     def start(self, records):
-        consensusGameRes, isMVP = self.cross_verify(records)
-        return consensusGameRes, isMVP
+        return self.cross_verify(records)
 
     def crossVerifyGameRes(self):
         # check if every signed is valid
-        for receiverPID in self.plyrData.plyrsPubK:
-            for senderPID in self.plyrData.plyrsPubK:
+        for receiverPID in self.plyrData.gamePlyrs:
+            for senderPID in self.plyrData.gamePlyrs:
                 gameResHash = SHA256.new(self.plyrData.plyrsRes[receiverPID])
                 if gameResHash.hexdigest() != self.plyrData.plyrsResHash[senderPID][receiverPID].hexdigest():
                     return False
@@ -35,15 +31,6 @@ class cross_verify:
                 except (ValueError, TypeError):
                     return False
         return True
-
-    def broadcastOnGameRes(self, consensusGameRes):
-        sortedPubKey = [self.plyrData.plyrsPubK[i].decode("utf-8") for i in self.plyrData.gamePlyrs]
-        res =  requests.post(f'http://{self.blockchain_port}/matches/new'
-                    , json={'plyrAddrList': sortedPubKey,
-                            'winnerAddr': self.plyrData.plyrsPubK[consensusGameRes.returnMVP(self.plyrData)].decode("utf-8"),
-                            'matchData': consensusGameRes.returnDict()})
-        print(res.text)
-        return
 
     def consensusOnGameRes(self):
         # calculate and get the record with most consensus
@@ -57,13 +44,15 @@ class cross_verify:
 
         # according to the most consensus record, get the MVP
         consensusGameRes = pickle.loads(self.plyrData.plyrsRes[consensusPlayerID])
-        MVP = consensusGameRes.returnMVP(self.plyrData)
-        if self.myConf.ID == MVP:
+        consensusGameRes.signature = self.plyrData.return_signature()
+        self.plyrData.consensusGameRes = consensusGameRes
+        MVP = consensusGameRes.returnMVP()
+        if self.key.pubKey == MVP:
             print("I am the MVP {}, broadcasting data...".format(MVP))
             # self.broadcastOnGameRes(consensusGameRes)
         else:
             print("I am not the MVP, the MVP is {}".format(MVP))
-        return consensusGameRes, self.myConf.ID == MVP
+        return consensusGameRes.returnMatchData(), MVP
 
     def broadcastGameHash(self, records):
         if self.myConf.ID not in self.plyrData.plyrsSignRes: self.plyrData.plyrsSignRes[self.myConf.ID] = {}

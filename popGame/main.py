@@ -1,8 +1,9 @@
 from py2p import mesh
 import sys, json
 from threading import Thread
-
-from flask import Flask, request
+import requests
+from io import BytesIO
+from flask import Flask, request, send_file
 
 class plyrData:
     gamePlyrs = []  # list of player p2p node id with same game match id
@@ -10,11 +11,21 @@ class plyrData:
     plyrsResHash = {}
     plyrsRes = {}
     plyrsPubK = {}
+    consensusGameRes = None
 
     @staticmethod
     def add_gamePlyrs(plyrSock):
         plyrData.gamePlyrs += [plyrSock]
         plyrData.gamePlyrs = sorted(plyrData.gamePlyrs)
+
+    @staticmethod
+    def return_signature():
+        signature = {}
+        for receiverPID in plyrData.plyrsSignRes:
+            signature[plyrData.plyrsPubK[receiverPID]] = {}
+            for senderPID in plyrData.plyrsSignRes:
+                signature[plyrData.plyrsPubK[receiverPID]][plyrData.plyrsPubK[senderPID]] =\
+                    plyrData.plyrsSignRes[receiverPID][senderPID]
 
 from popGame.sock import *
 from popGame.config import *
@@ -32,7 +43,8 @@ class main:
         self.myConf = config(gamePort, APIPort, self.nodeID)
         self.gameConf = gameConf(matchID)
         self.sk = sock(self.myConf, self.gameConf, key, plyrData)
-        self.cross_verify = cross_verify(plyrData, self.myConf, key, self.gameConf, self.sk, blockchain_port)
+        self.blockchain_port = blockchain_port
+        self.cross_verify = cross_verify(plyrData, self.myConf, key, self.gameConf, self.sk)
         self.setup_app()
         return
 
@@ -85,19 +97,33 @@ class main:
 
         @app.route('/verify', methods=['POST'])
         def verify():
-            content = json.loads(request.data)
-            gameRes = content["gameRec"]
+            gameRes = pickle.loads(request.get_data())
 
-            if len(plyrData.plyrsPubK) != len(gameRes[0]):
-                return f'number of players ({len(gameRes[0])}) of the match doesnt match users of the p2p', 400
+            if len(plyrData.plyrsPubK) != len(gameRes):
+                return f'number of players ({len(gameRes)}) of the match doesnt match users of the p2p', 400
 
             # Thread(target=self.cross_verify.start, args=(plyrResList(gameRes, self.winnerFunc),)).start()
-            gameRec, isMVP = self.cross_verify.start(records=plyrResList(gameRes, self.winnerFunc))
-            return json.dumps({"gameRec": gameRec.returnDict(), "isMVP": isMVP}), 200
+            gameRec = plyrResList(matchData=gameRes, winnerFunc=self.winnerFunc,
+                                  pubKeyList=[pubKey for sockid, pubKey in plyrData.plyrsPubK.items()])
+            gameRec, MVP = self.cross_verify.start(records=gameRec)
+            return send_file(self.create_bytes_msg({"gameRec": gameRec, "MVP": MVP}),
+                             as_attachment=True, attachment_filename="msg"), 200
+
+        @app.route('/broadcast', methods=['POST'])
+        def broadcast():
+            if plyrData.consensusGameRes is None:
+                return "cross-verify is not completed", 400
+            data = {'plyrAddrList': plyrData.consensusGameRes.returnPubKeyList(),
+                    'winnerAddr': plyrData.consensusGameRes.returnMVP(),
+                    'matchData': plyrData.consensusGameRes.returnMatchData(),
+                    'signature': plyrData.consensusGameRes.returnSignature()}
+            requests.post(f'http://127.0.0.1:{self.blockchain_port}/matches/new', data=pickle.dumps(data))
+            return "consensus game result broadcasted", 200
 
         @app.route('/plyrList', methods=['GET'])
         def return_plyrList():
-            return str(plyrData.plyrsPubK), 200
+            return send_file(self.create_bytes_msg(plyrData.plyrsPubK),
+                             as_attachment=True, attachment_filename="msg")
 
         @app.route('/test', methods=['POST'])
         def test():
@@ -105,6 +131,13 @@ class main:
             return "received data", 200
 
         app.run(host='0.0.0.0', port=self.myConf.APIPort)
+
+    @staticmethod
+    def create_bytes_msg(myMsg):
+        msg = BytesIO()
+        msg.write(pickle.dumps(myMsg))
+        msg.seek(0)
+        return msg
 
     def run_app(self, user_func):
         try:

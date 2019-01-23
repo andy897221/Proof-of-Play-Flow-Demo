@@ -2,7 +2,7 @@ import json
 
 def importGameResult(fileContent, plyrList):
     # format the matchData as such:
-    # matchData[0] = {"plyrPubKey": {"gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min", "isRadiant"}}
+    # matchData[0] = {b"plyrPubKey": {"gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min", "isRadiant"}}
     # first item of matchData is a dictionary of rating dictionary of a player
     # second item of matchData is radiantWins, a boolean value
 
@@ -15,7 +15,6 @@ def importGameResult(fileContent, plyrList):
     enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
 
     # if len(plyrList) != len(content["players"]): return False
-    plyrList = [plyr.decode("utf-8") for plyr in plyrList]
     for plyr in range(0, len(plyrList)):
         matchData[plyrList[plyr]] = {}
         for j in enum:
