@@ -113,6 +113,8 @@ class main:
         def broadcast():
             if plyrData.consensusGameRes is None:
                 return "cross-verify is not completed", 400
+            if plyrData.consensusGameRes.returnMVP() != key.pubKey:
+                return "you are not the winner, broadcast is not allowed", 400
             data = {'plyrAddrList': plyrData.consensusGameRes.returnPubKeyList(),
                     'winnerAddr': plyrData.consensusGameRes.returnMVP(),
                     'matchData': plyrData.consensusGameRes.returnMatchData(),

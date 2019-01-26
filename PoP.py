@@ -75,8 +75,7 @@ class handler:
             return None, None
 
     def broadcast_gameRec(self):
-        requests.post(f"http://127.0.0.1:{self.api_port}/broadcast")
-        return
+        return requests.post(f"http://127.0.0.1:{self.api_port}/broadcast").text
 
     def _direct_send_match(self, data):
         requests.post(f'http://127.0.0.1:{self.blockchain_port}/matches/new', data=pickle.dumps(data))

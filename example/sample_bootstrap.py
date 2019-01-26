@@ -23,8 +23,9 @@ def run_match(thisMatchID):
         gamePlyrList = sorted([item for key, item in plyrList.items()])  # assume the match records sorted corresponds to this plyr list
         gameRec = importGameRes.importGameResult(rawGameRec, gamePlyrList)
 
-        myPoP.verify_game(gameRec) # this will reutrn (gameRec, MVP) for user operations if required
-        myPoP.broadcast_gameRec()
+        myPoP.verify_game(gameRec) # this will return (gameRec, MVP) for user operations if required
+        res = myPoP.broadcast_gameRec()
+        print(res)
 
         myPoP.terminate() # pop will only be terminated if this is ran, otherwise it freeze at the end of this function
         return

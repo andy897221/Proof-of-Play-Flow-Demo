@@ -25,6 +25,8 @@ def run_match(thisMatchID):
         gameRec = importGameRes.importGameResult(rawGameRec, gamePlyrList)
 
         myPoP.verify_game(gameRec)
+        res = myPoP.broadcast_gameRec()
+        print(res)
 
         myPoP.terminate() # pop will only be terminated if this is ran, otherwise it freeze at the end of this function
         return
