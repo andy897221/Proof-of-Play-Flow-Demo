@@ -35,7 +35,7 @@ the two script demonstrate the setting up the directory running the script as a 
 
 the two script mainly demonstrate the process shown in the following image:
 
-<img src="(https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/verify.png" alt="PoPConn" width="100" height="auto">
+![PoP_game](https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/verify.png | width="100")
 
 both script initialize the PoP object like this:
 
