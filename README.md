@@ -35,7 +35,7 @@ the two script demonstrate the setting up the directory running the script as a 
 
 the two script mainly demonstrate the process shown in the following image:
 
-<img src="(https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/rating.png" alt="PoPConn" width="100" height="auto">
+<img src="(https://github.com/andy897221/Proof-of-Play/blob/master/resources/img/verify.png" alt="PoPConn" width="100" height="auto">
 
 both script initialize the PoP object like this:
 
@@ -43,8 +43,8 @@ both script initialize the PoP object like this:
 myPoP = PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, ratingFunc=myGetRating.getRating)
 ```
 
-where,
-winnerFunc (for pop game verification): takes game result as function parameter in python standard data structure (i.e. winnerFunc(game_result)) and returns 'winner's public key' (a single winner),
+where,\
+winnerFunc (for pop game verification): takes game result as function parameter in python standard data structure (i.e. winnerFunc(game_result)) and returns 'winner's public key' (a single winner),\
 ratingFunc (for pop blockchain): takes game result and a player's public key as function parameter (i.e. ratingFunc(game_result, player_public_key)) and returns a float value as 'rating'
 
 The sample_bootstrap.py demonstrate the following process:
