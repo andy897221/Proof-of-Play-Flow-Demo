@@ -27,11 +27,11 @@ the folder ran the above code will then initialized as a PoP project with a conf
 
 script with ```bootstrap``` within the filename means it is setup for a bootstrap node, ```client``` within the filename means it is setup for a client node
 
-### sample_setup_bootstrap.py / sample_setup_client.py
+## sample_setup_bootstrap.py / sample_setup_client.py
 
 the two script demonstrate the setting up the directory running the script as a PoP project directory
 
-### sample_bootstrap.py / sample_client.py
+## sample_bootstrap.py / sample_client.py
 
 the two script mainly demonstrate the process shown in the following image:
 
@@ -53,9 +53,9 @@ ratingFunc (for pop blockchain):
 * takes game result and a player's public key as function parameter (i.e. ratingFunc(game_result, player_public_key))
 * returns a float value as 'rating'
 
-#### The sample_bootstrap.py / sample_client.py demonstrate the following process:\
+### The sample_bootstrap.py / sample_client.py demonstrate the following process:
 1. initialize parameters and PoP object
-2. ___main__ wrapper
+2. ____main____ wrapper
    1. open a thread and run a function to start the pop blockchain
    2. start a pop match with a provided matchID, terminates after the game result verification completed
    3. set the global variable waitingMatch = False, so that the pop blockchain thread will returns the blockchain status
@@ -71,7 +71,7 @@ ratingFunc (for pop blockchain):
    1. return chain status after the match has been completed and broadcasted to bootstrap chain (since bootstrap is the winner)
 
 
-### sample_bootstrap_blockchain.py / sample_client_blockchain.py
+## sample_bootstrap_blockchain.py / sample_client_blockchain.py
 
 the following 2 scripts assumed client script is opened shortly after bootstrap script (about 1 second)
 
@@ -79,7 +79,7 @@ auto_broadcast is set False in the PoP blockchain decorator to show specific blo
 
 matches are also generated for demo convenience
 
-#### the sample_bootstrap_blockchain.py demonstrate the following process:
+### the sample_bootstrap_blockchain.py demonstrate the following process:
 1. run_blockchain()
    1. wait for client blockchain (Bob blockchain) connects
    2. generate 5 matches of Alice (this node) wins, this will write 2 blocks
