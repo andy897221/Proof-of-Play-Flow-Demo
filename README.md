@@ -75,7 +75,7 @@ auto_broadcast is set False in the PoP blockchain decorator to show specific blo
 
 matches are also generated for demo convenience
 
-the sample_bootstrap_blockchain.py demonstrate the following process:\
+#### the sample_bootstrap_blockchain.py demonstrate the following process:
 1. run_blockchain()
    1. wait for client blockchain (Bob blockchain) connects
    2. generate 5 matches of Alice (this node) wins, this will write 2 blocks
@@ -84,7 +84,7 @@ the sample_bootstrap_blockchain.py demonstrate the following process:\
    5. waiting for client blockchain (client script step 4) to replace this blockchain since client will add two more matches in its blockchain
    6. print the chain status and terminate
 
-the sample_client_blockchain.py demonstrate the following process:\
+#### the sample_client_blockchain.py demonstrate the following process:
 1. run_blockchain()
    1. generate 2 matches of Bob (this node) wins, this will write 1 block
    2. waiting for bootstrap node to replace this blockchain, since it is 1 block ahead (bootstrap script step 4)
