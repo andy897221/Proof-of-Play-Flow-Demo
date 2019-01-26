@@ -101,8 +101,8 @@ nodePubKey = []
 nodePriKey = []
 
 print("initializing matches...")
-for f in os.listdir("./../example/config/blockchain/my_data/genesis_matches"):
-    matches += ["./../example/config/blockchain/my_data/genesis_matches/{}".format(f)]
+for f in os.listdir("./../resources/genesis_matches"):
+    matches += ["./../resources/genesis_matches/{}".format(f)]
 
 # define 50 players, use array with init value 0, nodeID 1 to 50, for loop 500 records, get necessary json for the blockchain and write into a file
 

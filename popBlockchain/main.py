@@ -1,24 +1,31 @@
 import sys
 from threading import Thread
-
+from io import BytesIO
 from flask import Flask, request, send_file
+import logging
 
 class config:
     def __init__(self, nodeID, myPort, bootstrapNode):
         self.knownNodesFile = f"./data/knownNodes{nodeID}.appData"
         self.myPort = myPort
-        self.myIP = "127.0.0.1"
+        self.myIP = "127.0.0.1:"+str(self.myPort)
         self.bootstrapNode = bootstrapNode
         return
+
+class consensusSpace:
+    timeout = 5
+    chainSpace = {} # pubKey is key, {{chain}, endingIndex, startTime, timeout}
+    knownLength = {}
 
 from popBlockchain.helper import *
 from popBlockchain.blockchain import *
 from popBlockchain.key import *
 
 class main:
-    def __init__(self, nodeID, myPort, bootstrapNode, fileLoc, keyLoc, saveState, rating_func):
+    def __init__(self, nodeID, myPort, bootstrapNode, fileLoc, keyLoc, saveState, rating_func, auto_broadcast):
         key.pubKey, key.priKey = self.init_key(keyLoc, nodeID)
-        self.blockchain = Blockchain(fileLoc, nodeID, saveState, helper, key, rating_func)
+        self.helper = helper(rating_func, key)
+        self.blockchain = Blockchain(fileLoc, nodeID, saveState, self.helper, key, auto_broadcast)
         self.config = config(nodeID, myPort, bootstrapNode)
         return
 
@@ -35,8 +42,17 @@ class main:
                 priKey = priKeyF.read()
         return pubKey, priKey
 
+    @staticmethod
+    def create_bytes_msg(myMsg):
+        msg = BytesIO()
+        msg.write(pickle.dumps(myMsg))
+        msg.seek(0)
+        return msg
+
     def start_server(self):
         app = Flask(__name__)
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
         self.load_nodes()
 
         @app.route('/status', methods=['GET'])
@@ -71,20 +87,27 @@ class main:
             }
             return json.dumps(response), 201
 
-        @app.route('/nodes/retrieve', methods=['GET'])
+        @app.route('/nodes/retrieve', methods=['POST'])
         def return_nodes():
-            return pickle.dumps(self.blockchain.nodes), 200
+            data = request.get_data()
+            if data != b'':
+                nodes = pickle.loads(request.get_data())
+                for nodePubKey, nodeAddr in nodes.items():
+                    if nodePubKey not in self.blockchain.nodes: self.blockchain.register_node(nodePubKey, nodeAddr)
+            return send_file(self.create_bytes_msg(self.blockchain.nodes),
+                             as_attachment=True, attachment_filename="msg")
 
         ############### chain hosting ##############
 
         @app.route('/chain', methods=['GET'])
         def full_chain():
-            return send_file(pickle.dumps(self.blockchain.chain),
+            return send_file(self.create_bytes_msg(self.blockchain.chain),
                              as_attachment=True, attachment_filename="msg")
 
         @app.route('/chain/status', methods=['GET'])
         def chain_status():
             response = {
+                'current index': len(self.blockchain.chain),
                 'current target': self.blockchain.current_target,
                 'current rating': self.blockchain.current_rating,
                 'difficulty': self.blockchain.difficulty,
@@ -92,14 +115,27 @@ class main:
             }
             return pickle.dumps(response), 200
 
+        @app.route('/chain/matches', methods=['GET'])
+        def current_matches():
+            return send_file(self.create_bytes_msg(self.blockchain.current_matches),
+                             as_attachment=True, attachment_filename="msg")
+
         @app.route('/chain/write', methods=['POST'])
         def consensus():
             # dont have checkpoint, pass full chain
-            full_chain = pickle.loads(requests.get_data())
+            print("request of consensus from others' node recieved.")
+            full_chain = pickle.loads(request.get_data())
             res = self.blockchain.resolve_conflict(full_chain)
-            if res: response = {'message': 'a chain has replaced ours'}
-            else: response = {'message': 'chain has been rejected'}
-            return json.dumps(response), 201
+            if res: response = 'a chain has replaced ours'
+            else: response = 'chain has been rejected'
+            print(f"response to others: {response}")
+            print(f"current target: {self.blockchain.current_target}, current rating: {self.blockchain.current_rating}.")
+            return response
+
+        @app.route('/chain/broadcast', methods=['POST'])
+        def broadcast():
+            self.helper.broadcastResult(self.blockchain.nodes, self.blockchain.chain)
+            return "broadcasted", 200
 
         app.run(host='0.0.0.0', port=self.config.myPort)
 
@@ -107,7 +143,8 @@ class main:
     def load_nodes(self):
         self.blockchain.register_node(key.pubKey, self.config.myIP)
         if self.config.bootstrapNode is not None:
-            content = pickle.loads(requests.get(f'http://{self.config.bootstrapNode}/nodes/retrieve').content)
+            content = pickle.loads(
+                requests.post(f'http://{self.config.bootstrapNode}/nodes/retrieve', data=pickle.dumps(self.blockchain.nodes)).content)
             for pubKey, addr in content.items(): self.blockchain.register_node(pubKey, addr)
         self.blockchain.saveState()
         return

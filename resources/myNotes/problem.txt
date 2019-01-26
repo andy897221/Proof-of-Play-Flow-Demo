@@ -3,3 +3,5 @@ what if loser pludge the match in conn intentionally?
 winnerFunc should be immutable, but it is not for now
 
 signature for every entry port for security
+
+validation machine for match start and end, matchmaking etc, is required

@@ -14,6 +14,7 @@ def init_key(from_path, param_json):
         return
 
 def init(from_path, nodeID=1, setupJSON=None):
+    isDefault = True
     setup_frame = {
         "nodeID": str(nodeID),
         "game_port": 1000,
@@ -33,17 +34,15 @@ def init(from_path, nodeID=1, setupJSON=None):
         setup_frame['keyLoc'] = input(f"your public and private key directory (default - '{setup_frame['keyLoc']}'): ") or setup_frame['keyLoc']
         setup_frame['blockchainLoc'] = input(f"your .blockchain file and other related blockchain files directory (default - {setup_frame['blockchainLoc']}): ") or setup_frame['blockchainLoc']
     else:
+        isDefault = False
         for key, item in setupJSON.items():
             setup_frame[key] = setupJSON[key]
 
-    if not os.path.exists(f"{from_path}/config"): os.makedirs(f"{from_path}/config")
-    if not os.path.exists(f"{from_path}/config/nodeKey"): os.makedirs(f"{from_path}/config/nodeKey")
-    if not os.path.exists(f"{from_path}/config/blockchain"): os.makedirs(f"{from_path}/config/blockchain")
-    if not os.path.isfile(f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.pubKey") or not os.path.isfile(
-            f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.priKey"): init_key(from_path, setup_frame)
+    if not os.path.exists(f"{from_path}/config") and isDefault: os.makedirs(f"{from_path}/config")
+    if not os.path.exists(f"{from_path}/config/nodeKey") and isDefault: os.makedirs(f"{from_path}/config/nodeKey")
+    if not os.path.exists(f"{from_path}/config/blockchain") and isDefault: os.makedirs(f"{from_path}/config/blockchain")
+    if (not os.path.isfile(f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.pubKey") or not os.path.isfile(
+            f"{from_path}/{setup_frame['keyLoc']}/{setup_frame['nodeID']}.priKey")) and isDefault: init_key(from_path, setup_frame)
     with open(f"./config/{setup_frame['nodeID']}.json", "w") as f:
         f.write(json.dumps(setup_frame))
     print("config initialization completed.")
-
-# if __name__ == '__main__':
-#     init()

@@ -8,7 +8,7 @@ def path(file):
 
 class handler:
 
-    def __init__(self, nodeID, winnerFunc, setupJSON=None):
+    def __init__(self, nodeID, winnerFunc, ratingFunc, setupJSON=None):
         from_path = path(sys.argv[0])
 
         if os.path.isfile(f'{from_path}/config/{nodeID}.json'):
@@ -32,6 +32,7 @@ class handler:
         self.blockchainLoc = config["blockchainLoc"]
         self.blockchain_bootstrap_ip = config["blockchain_bootstrap_ip"]
         self.winnerFunc = winnerFunc
+        self.ratingFunc = ratingFunc
         return
 
     def run_conn(self, matchID):
@@ -44,7 +45,7 @@ class handler:
             return func_wrapper
         return user_func
 
-    def run_blockchain(self, saveState, rating_func):
+    def run_blockchain(self, saveState, auto_broadcast=True):
         def user_func(func):
             def func_wrapper():
                 # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
@@ -52,7 +53,7 @@ class handler:
                 # the above two argument is disabled for simplify features
                 blockchain = \
                     _blockchain.main(self.nodeID, self.blockchain_port, self.blockchain_bootstrap_ip, self.blockchainLoc,
-                                     self.keyLoc, saveState, rating_func)
+                                     self.keyLoc, saveState, self.ratingFunc, auto_broadcast)
                 blockchain.run_app(func)
             return func_wrapper
         return user_func
@@ -86,6 +87,22 @@ class handler:
 
     def return_chain_status(self):
         return pickle.loads(requests.get(f"http://127.0.0.1:{self.blockchain_port}/chain/status").content)
+
+    def return_node(self):
+        return pickle.loads(requests.post(f"http://127.0.0.1:{self.blockchain_port}/nodes/retrieve").content)
+
+    def return_chain(self):
+        return pickle.loads(requests.get(f"http://127.0.0.1:{self.blockchain_port}/chain").content)
+
+    def broadcast_chain(self):
+        return requests.post(f"http://127.0.0.1:{self.blockchain_port}/chain/broadcast")
+
+    def return_current_matches(self):
+        return pickle.loads(requests.get(f"http://127.0.0.1:{self.blockchain_port}/chain/matches").content)
+
+    @staticmethod
+    def return_myPubKey():
+        return _blockchain.key.pubKey
 
     def terminate(self):
         raise SystemExit

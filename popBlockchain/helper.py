@@ -1,5 +1,6 @@
 import numpy as np
 import requests
+import pickle, tempfile
 
 class helper:
     matches_for_target = 10
@@ -22,12 +23,12 @@ class helper:
             if plyrPubKey == match['winnerAddr']: return True
         return False
 
-    @staticmethod
-    def broadcastResult(nodes, chain):
+    def broadcastResult(self, nodes, chain):
         for node in nodes:
-            print(f"broadcasting...current node: {node[-10:-1]}")
-            res = requests.post(f"http://{nodes[node]}/chain/write", json={"chain": chain})
-            print(res.text)
+            if node == self.key.pubKey: continue
+            print(f"broadcasting...current node: {node[27:37]}")
+            res = requests.post(f"http://{nodes[node]}/chain/write", data=pickle.dumps(chain))
+            print("received message: "+res.text)
         return
 
     def get_target_rating(self, chain, plyrPubKey, difficulty):

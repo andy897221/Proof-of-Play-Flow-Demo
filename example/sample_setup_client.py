@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(0, './../') # needed only in example scripts
 import PoP
-import myGetMVP
 
 # setupJSON needs to be defined if this is the first time the nodeID (user) initialize PoP
 nodeID = "Bob"
@@ -13,6 +12,6 @@ setupJSON = {
     "blockchain_bootstrap_ip": "127.0.0.1:1001",
     # not full parameters are configurated, default paramters will be intialized if it doesn't present in setupJSON
 }
-PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, setupJSON=setupJSON)
+PoP.handler(nodeID=nodeID, winnerFunc=None, ratingFunc=None, setupJSON=setupJSON)
 
 # then config file is then generated
