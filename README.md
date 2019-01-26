@@ -45,9 +45,13 @@ myPoP = PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, ratingFunc=myGetR
 
 where:
 
-winnerFunc (for pop game verification): takes game result as function parameter in python standard data structure (i.e. winnerFunc(game_result)) and returns 'winner's public key' in public key data type (bytes, same as .pubKey in config directory) (a single winner),
+winnerFunc (for pop game verification):
+* takes game result as function parameter in python standard data structure (i.e. winnerFunc(game_result))
+* returns 'winner's public key' in public key data type (bytes, same as .pubKey in config directory) (a single winner)
 
-ratingFunc (for pop blockchain): takes game result and a player's public key as function parameter (i.e. ratingFunc(game_result, player_public_key)) and returns a float value as 'rating'
+ratingFunc (for pop blockchain):
+* takes game result and a player's public key as function parameter (i.e. ratingFunc(game_result, player_public_key))
+* returns a float value as 'rating'
 
 #### The sample_bootstrap.py / sample_client.py demonstrate the following process:\
 1. initialize parameters and PoP object
