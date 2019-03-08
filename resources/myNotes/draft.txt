@@ -1,0 +1,16 @@
+PoP on attacks
+FIND OUT WHAT SECURITY CONCERN CONSENSUS MODEL HAS
+IMPLICIT SOLUTION OF ATTACK PROBLEM BY POP
+Sybil Attack: PoP - reduced likeihood using reputation system from confirmation, only regular users can be trusted
+51% Attack: PoP - reduced likeihood using reputation system from confirmation
+Confirmation (Byzantine generals) = Hash Rate: need define so that it can use as Sybil Attack prevention mechanism
+
+
+Double Spending (why pick: PoP didnt solve this): cause - accept payment before confirmed / solution - wait for confirmation
+Double Spending:
+- isolating broadcasting
+- Fix: wait for confirmation for users
+- How: attackers can only get confirmed to one transaction, since it is economically hard to write own's block
+PoP: 
+
+Can PoP solve nothing-at-a-stake?
