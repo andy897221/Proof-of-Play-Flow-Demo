@@ -105,3 +105,13 @@ matches are also generated for demo convenience
 ## Problem
 
 py2p disconnect() function doesn't work properly, so there is no safe disconnect feature in pop game
+
+## Dependence
+
+__init__.py is not provided yet, the following is the list of depedence:
+
+* Flask
+* numpy
+* py2p
+* pycryptodome
+* rehash (url: https://github.com/kislyuk/rehash)
