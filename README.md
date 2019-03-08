@@ -108,7 +108,7 @@ py2p disconnect() function doesn't work properly, so there is no safe disconnect
 
 ## Dependence
 
-__init__.py is not provided yet, the following is the list of depedence:
+__init__.py is not provided yet, the following is the list of dependence:
 
 * Flask
 * numpy
