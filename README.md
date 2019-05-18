@@ -1,6 +1,44 @@
 # Proof-of-Play: A Novel Consensus Model forBlockchain-based Peer-to-Peer Gaming System
 this is an experimental library used as a demo of the idea of Proof-of-Play
 
+## Installation
+There is dependence has to be taken care of before using the library:
+* Flask
+* numpy
+* py2p
+* pycryptodome
+* rehash (url: https://github.com/kislyuk/rehash)
+
+To avoid issues in installation, please use anaconda prompt and create a virtual env (anaconda download link: https://www.anaconda.com/distribution/)
+
+Steps:
+
+after install anaconda, open anaconda prompt and do the following:
+
+```python
+conda create -n myPoP python=3.7
+```
+
+```python
+pip install numpy
+```
+
+```python
+pip install py2p
+```
+
+```python
+pip install flask
+```
+
+```python
+pip install pycryptodome
+```
+
+```python
+pip install rehash
+```
+
 ## PoP library usage
 
 the PoP object can be initialized as following:
@@ -105,13 +143,3 @@ matches are also generated for demo convenience
 ## Problem
 
 py2p disconnect() function doesn't work properly, so there is no safe disconnect feature in pop game
-
-## Dependence
-
-__init__.py is not provided yet, the following is the list of dependence:
-
-* Flask
-* numpy
-* py2p
-* pycryptodome
-* rehash (url: https://github.com/kislyuk/rehash)
