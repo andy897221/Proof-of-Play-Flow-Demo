@@ -27,8 +27,14 @@ class helper:
         for node in nodes:
             if node == self.key.pubKey: continue
             print(f"broadcasting...current node: {node[27:37]}")
-            res = requests.post(f"http://{nodes[node]}/chain/write", data=pickle.dumps(chain))
-            print("received message: "+res.text)
+            for i in range(0,3):
+                try:
+                    res = requests.post(f"http://{nodes[node]}/chain/write", data=pickle.dumps(chain))
+                    print("received message: "+res.text)
+                    break
+                except Exception:
+                    print(f"node {nodes[node]} does not exists / is offline.")
+                    print(f"retrying {i+1}...")
         return
 
     def get_target_rating(self, chain, plyrPubKey, difficulty):
