@@ -50,4 +50,5 @@ class helper:
         for match in range(0, len(matches)):
             rating = self.user_rating_func(matches[match], plyrPubKey)
             total_rating += rating
+        if len(matches) == 0: return 0
         return (total_rating / len(matches)) * difficulty
