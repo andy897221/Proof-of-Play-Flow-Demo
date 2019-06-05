@@ -69,7 +69,7 @@ to activate a blockchain one must create a genesis. It defines the data structur
 
 It is a list of dictionary of
 ```python
-genesis = {['plyrList': [...], 'winnerAddr': pubKey, 'matchData': x], ...}
+genesis = [{'plyrList': [...], 'winnerAddr': pubKey, 'matchData': x}, ...]
 ```
 where:
 * plyrList: a dictionary, the list (```[...]```) of players' public key of the match
