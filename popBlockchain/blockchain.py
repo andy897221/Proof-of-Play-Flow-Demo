@@ -124,9 +124,9 @@ class Blockchain:
             })
         if self.isSaving: self.saveState()
         # print('new match has been added. winner: ...{}'.format(self.current_matches[-1]["winnerAddr"].split("\n")[1][-10:-1]))
-        addToBlock = self.last_block()['index'] + 1
         if not genesis: self.proof_of_play()
         if genesis: return 1
+        addToBlock = self.last_block()['index'] + 1
         return addToBlock
 
     def valid_chain(self, chain):
