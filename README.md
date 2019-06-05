@@ -82,10 +82,10 @@ with open("genesis_block.data", "wb") as f:
     f.write(pickle.dumps(genesis))
 ```
 The genesis_block.data file is created, put the file into the genesis user config folder (this user is responsible to activate this new blockchain). The path is as follows:
-* ./config/blockchian/
+* ./config/blockchain/
 where the root is the place you ran the setup script for the genesis user.
 
-Note that genesis block can be empty, so you can simply create an empty ```genesis``` and write into the ```genesis_block.data``` file.
+Note that genesis block can be empty, so you can simply create an empty ```genesis``` with the specific data structure above, and write into the ```genesis_block.data``` file.
 
 ##  Example script explanation
 
