@@ -41,6 +41,8 @@ pip install rehash
 
 ## PoP library usage
 
+### generate users
+
 the PoP object can be initialized as following:
 ```python
 import PoP
@@ -60,6 +62,30 @@ setupJSON = {
 ```
 
 the folder ran the above code will then initialized as a PoP project with a config folder, with a .json file storing above setupJSON
+
+### generate genesis
+
+to activate a blockchain one must create a genesis. It defines the data structure of each block. The genesis follows a certain structure due to the implementation of PoP. Note that this step is specific and only if by the following steps can you create the genesis block. It is as follows:
+
+It is a list of dictionary of
+```python
+genesis = {'plyrList': [...], 'winnerAddr': pubKey, matchData: x}
+```
+where:
+* plyrList: a dictionary, the list (```[...]```) of players' public key of the match
+* winnerAddr: a byte value, the public key (```pubKey```) of the winner
+* matchData: any data type for you to manipulate (you need to define ```winnerFunc``` and ```ratingFunc``` later to pick the winner and rate the players respectively in your defined matchData structure
+
+Then, assume you defined the structure above, do:
+```python
+with open("genesis_block.data", "wb") as f:
+    f.write(pickle.dumps(genesis))
+```
+The genesis_block.data file is created, put the file into the genesis user config folder (this user is responsible to activate this new blockchain). The path is as follows:
+* ./config/blockchian/
+where the root is the place you ran the setup script for the genesis user.
+
+Note that genesis block can be empty, so you can simply create an empty ```genesis``` and write into the ```genesis_block.data``` file.
 
 ##  Example script explanation
 
