@@ -5,7 +5,7 @@ import myGetMVP, importGameRes, myGetRating # function written by the user
 
 
 # the nodeID config is already generated, please refer to sample_setup.py
-nodeID, matchID = "Bob", 1
+nodeID, matchID = "client", 1
 myPoP = PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, ratingFunc=myGetRating.getRating)
 
 
@@ -16,7 +16,7 @@ def run_match(thisMatchID):
         ########## API entry and p2p entry threads are running, you can execute any code here ##########
 
         # create a two player pop match
-        myPoP.game_conn_to("127.0.0.1:1000") # connect to bootstrap node
+        myPoP.game_conn_to("127.0.0.1:2000") # connect to bootstrap node
 
         plyrList = myPoP.return_plyrList()
         # assume a match record has been produced from a match: 1533081738_4035507616_match.data

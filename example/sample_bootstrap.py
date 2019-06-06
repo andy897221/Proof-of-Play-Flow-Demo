@@ -5,21 +5,21 @@ import PoP
 import myGetMVP, importGameRes, myGetRating # function written by the user
 
 # the nodeID config is already generated, please refer to sample_setup.py
-nodeID, matchID = "Alice", 1
+nodeID, matchID = "bootstrap", 1
 myPoP = PoP.handler(nodeID=nodeID, winnerFunc=myGetMVP.getMVP, ratingFunc=myGetRating.getRating)
 
 
 
-def run_match(thisMatchID):
+def run_match(thisMatchID, file):
     @myPoP.run_conn(matchID=thisMatchID)
     def this_match():
         ########## API entry and p2p entry threads are running, you can execute any code here ##########
 
-        while len(myPoP.return_plyrList()) < 2: time.sleep(1)
+        while len(myPoP.return_plyrList()) < 6: time.sleep(1)
         plyrList = myPoP.return_plyrList()
 
         # assume a match record has been produced from a match: 1533081738_4035507616_match.data
-        with open('1533081738_4035507616_match.data', 'r') as f: rawGameRec = f.read()
+        with open(file, 'r') as f: rawGameRec = f.read()
         gamePlyrList = sorted([item for key, item in plyrList.items()])  # assume the match records sorted corresponds to this plyr list
         gameRec = importGameRes.importGameResult(rawGameRec, gamePlyrList)
 
@@ -33,14 +33,13 @@ def run_match(thisMatchID):
 
 
 
-waitingMatch = True
-@myPoP.run_blockchain(saveState=False)
+@myPoP.run_blockchain(saveState=False, auto_broadcast=True)
 def run_blockchain():
     ################ blockchain entry is running, you can execute any code here ################
     print("blockchain is running")
-    while waitingMatch: time.sleep(1)
-    print(myPoP.return_chain_status())
-    myPoP.terminate()
+    while True:
+        time.sleep(1)
+        print(myPoP.return_chain_status())
 
 
 
@@ -51,7 +50,6 @@ if __name__ == '__main__':
         blockchain.start()
         run_match(thisMatchID=matchID)
         time.sleep(1)
-        waitingMatch = False
         while blockchain.isAlive(): time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
         print("example completed")

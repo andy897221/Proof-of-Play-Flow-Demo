@@ -3,7 +3,7 @@ sys.path.insert(0, './../') # needed only in example scripts
 import PoP
 
 # setupJSON needs to be defined if this is the first time the nodeID (user) initialize PoP
-nodeID = "Bob"
+nodeID = "client"
 setupJSON = {
     "nodeID": str(nodeID),
     "game_port": 1003,

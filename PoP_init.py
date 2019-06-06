@@ -17,6 +17,7 @@ def init(from_path, nodeID=1, setupJSON=None):
     isDefault = True
     setup_frame = {
         "nodeID": str(nodeID),
+        "external_game_port": 7777,
         "game_port": 1000,
         "blockchain_port": 1001,
         "API_port": 1002,
@@ -27,14 +28,16 @@ def init(from_path, nodeID=1, setupJSON=None):
     if setupJSON is None:
         print("input the value and press enter, press enter directly to use the default value:")
         setup_frame["nodeID"] = input(f"your node id / name (default - '{setup_frame['nodeID']}'): ") or setup_frame['nodeID']
+        setup_frame["external_game_port"] = input(f"your node id / name (default - '{setup_frame['external_game_port']}'): ") or setup_frame['external_game_port']
         setup_frame["game_port"] = input(f"your port (default - {setup_frame['game_port']}): ") or setup_frame['game_port']
         setup_frame['blockchain_port'] = input(f"your blockchain port (default - '{setup_frame['blockchain_port']}'): ") or setup_frame['blockchain_port']
         setup_frame['API_port'] = input(f"your API port address for hosting p2p (default - '{setup_frame['API_port']}'): ") or setup_frame['API_port']
         setup_frame['blockchain_bootstrap_ip'] = input(f"your blockchain bootstrap ip (default - '{setup_frame['blockchain_bootstrap_ip']}'): ") or setup_frame['blockchain_bootstrap_ip']
         setup_frame['keyLoc'] = input(f"your public and private key directory (default - '{setup_frame['keyLoc']}'): ") or setup_frame['keyLoc']
         setup_frame['blockchainLoc'] = input(f"your .blockchain file and other related blockchain files directory (default - {setup_frame['blockchainLoc']}): ") or setup_frame['blockchainLoc']
+        pass
     else:
-        isDefault = False
+        # isDefault = False
         for key, item in setupJSON.items():
             setup_frame[key] = setupJSON[key]
 

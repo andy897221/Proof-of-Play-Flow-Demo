@@ -10,18 +10,20 @@ def importGameResult(fileContent, plyrList):
 
     content = json.loads(fileContent)
 
-    matchData = dict()
-    radiantWins = content["radiant_win"]
-    enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
+    return content
 
-    # if len(plyrList) != len(content["players"]): return False
-    for plyr in range(0, len(plyrList)):
-        matchData[plyrList[plyr]] = {}
-        for j in enum:
-            matchData[plyrList[plyr]][j] = content["players"][plyr]["benchmarks"][j]["raw"]
-        if plyr == 0: matchData[plyrList[plyr]]["isRadiant"] = True
-        else: matchData[plyrList[plyr]]["isRadiant"] = False
+    # matchData = dict()
+    # radiantWins = content["radiant_win"]
+    # enum = ["gold_per_min", "xp_per_min", "kills_per_min", "last_hits_per_min", "hero_damage_per_min", "hero_healing_per_min", "tower_damage", "stuns_per_min"]
 
-    matchData = [matchData, radiantWins]
+    # # if len(plyrList) != len(content["players"]): return False
+    # for plyr in range(0, len(plyrList)):
+    #     matchData[plyrList[plyr]] = {}
+    #     for j in enum:
+    #         matchData[plyrList[plyr]][j] = content["players"][plyr]["benchmarks"][j]["raw"]
+    #     if plyr == 0: matchData[plyrList[plyr]]["isRadiant"] = True
+    #     else: matchData[plyrList[plyr]]["isRadiant"] = False
 
-    return matchData
+    # matchData = [matchData, radiantWins]
+
+    # return matchData
