@@ -1,31 +1,25 @@
 import json
 
-# def getPubKey(bytes_string):
-#     pubkey = ""
-#     for s in bytes_string.decode().split('\n'):
-#         if ("PUBLIC KEY" in s):
-#             continue
-#         pubkey = pubkey + s
-#     return pubkey
+def getPubKey(bytes_string):
+    pubkey = ""
+    for s in bytes_string.decode().split('\n'):
+        if ("PUBLIC KEY" in s):
+            continue
+        pubkey = pubkey + s
+    return pubkey
 
 def importGameResult(fileContent, playerList):
     content = json.loads(fileContent)
     
     matchData = dict()
-    players = sorted(content.keys())
-    for player in players:
-        matchData[player] = content[player]
 
-    if(len(players) != len(playerList)):
+    if(len(content.keys()) != len(playerList)):
         return None
-    
-    # for i in range(len(playerList)):
-    #     playerList[i] = getPubKey(playerList[i])
 
-    for player in players:
-        if player not in playerList:
+    for player in playerList:
+        if (getPubKey(player) not in content.keys()):
             return None
-        playerList.remove(player)
+        matchData[player] = content[getPubKey(player)]
 
     return matchData
 
