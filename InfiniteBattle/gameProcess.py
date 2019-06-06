@@ -1,8 +1,8 @@
 import json
 
-def getPubKey(str):
+def getPubKey(bytes_string):
     pubkey = ""
-    for s in str.split('\n'):
+    for s in bytes_string.decode().split('\n'):
         if ("PUBLIC KEY" in s):
             continue
         pubkey = pubkey + s
