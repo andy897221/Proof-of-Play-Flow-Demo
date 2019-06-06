@@ -32,6 +32,7 @@ class Mapping:
         self.src_port = src_port
         self.dst_port = dst_port
         self.setting = (self.src_port, "127.0.0.1", self.dst_port)
+        print("[+]Running mapping " + str(self.src_port) + " >>>>>> " + "127.0.0.1 " + str(self.dst_port))
 
     def run(self):
         thread.start_new_thread(server, self.setting)
