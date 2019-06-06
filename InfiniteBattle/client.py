@@ -50,4 +50,5 @@ def run_match(nodeID, clientID, thisMatchID, resultFile, dstip):
     os.remove(f'config/nodeKey/{setup_frame["nodeID"]}.priKey')
     os.remove(f'config/nodeKey/{setup_frame["nodeID"]}.pubKey')
     os.remove(f'config/blockchain/{setup_frame["nodeID"]}.blockchain')
+    os.remove(f"./config/{setup_frame['nodeID']}.json")
     
