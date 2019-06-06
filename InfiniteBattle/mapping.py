@@ -35,3 +35,5 @@ class Mapping:
 
     def run(self):
         thread.start_new_thread(server, self.setting)
+        while True:
+            time.sleep(60)
