@@ -40,7 +40,7 @@ def getRating(matchData, plyrPubKey):
     if(plyrData["IsWinner"]):
         score = score * 1.6
     
-    print(plyrPubKey, score)
+    # print(plyrPubKey, score)
     return float(round(score, 2))
 
 def getMVP(matchData):
