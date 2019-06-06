@@ -1,5 +1,13 @@
 import json
 
+def getPubKey(str):
+    pubkey = ""
+    for s in str.split('\n'):
+        if ("PUBLIC KEY" in s):
+            continue
+        pubkey = pubkey + s
+    return pubkey
+
 def importGameResult(fileContent, playerList):
     content = json.loads(fileContent)
     
@@ -11,6 +19,9 @@ def importGameResult(fileContent, playerList):
     if(len(players) != len(playerList)):
         return None
     
+    for i in range(len(playerList)):
+        playerList[i] = getPubKey(playerList[i])
+
     for player in players:
         if player not in playerList:
             return None
