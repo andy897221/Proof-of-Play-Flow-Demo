@@ -46,6 +46,8 @@ class PlayerNode:
             #     print(self.myPoP.return_chain_status())
         runningblockchain()
         
+    def get_blockchain(self):
+        print(self.myPoP.return_chain())
 
     def run_match(self, thisMatchID, resultFile, dstipsFile):
         dstips = open(dstipsFile, 'r').readlines()
@@ -92,4 +94,5 @@ if __name__ == "__main__":
             exit(0)
         if (command.split(' ')[0] == "run_match"):
             player.run_match(command.split(' ')[1], command.split(' ')[2], command.split(' ')[3])
-        
+        if (command.split(' ')[0] == "get_blockchain"):
+            player.get_blockchain()
