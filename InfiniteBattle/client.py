@@ -29,7 +29,7 @@ def run_match(nodeID, clientID, thisMatchID, resultFile, dstip):
         ########## API entry and p2p entry threads are running, you can execute any code here ##########
 
         # create a two player pop match
-        time.sleep(2)
+        time.sleep(5)
         myPoP.game_conn_to(dstip) # connect to bootstrap node
 
         plyrList = myPoP.return_plyrList()
