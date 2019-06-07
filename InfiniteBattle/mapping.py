@@ -19,13 +19,17 @@ def server(*settings):
 
 def forward(source, destination):
     string = ' '
-    while string:
-        string = source.recv(32768)
-        if string:
-            destination.sendall(string)
-        else:
-            source.shutdown(socket.SHUT_RD)
-            destination.shutdown(socket.SHUT_WR)
+    try:
+        while string:
+            string = source.recv(32768)
+            if string:
+                destination.sendall(string)
+            else:
+                source.shutdown(socket.SHUT_RD)
+                destination.shutdown(socket.SHUT_WR)
+    except Exception as e:
+        print("error message: " + str(e))
+        print("error port:", source, destination)
 
 class Mapping:
     def __init__(self, src_port, dst_port):
