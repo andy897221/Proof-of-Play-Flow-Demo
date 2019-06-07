@@ -29,12 +29,17 @@ class PlayerNode:
         self.blockchainMapping = Process(target=Mapping(self.external_game_port + 2, self.blockchain_port).run)
         self.blockchainMapping.daemon = True
         self.blockchainMapping.start()
+        # mapping for the match
+        self.gameMatch = Process(target=Mapping(self.external_game_port + 1, self.game_port).run)
+        self.gameMatch.daemon = True
+        self.gameMatch.start()
 
     def terminate(self):
         if self.nodeID is None:
             return
         self.blockchainProcess.terminate()
         self.blockchainMapping.terminate()
+        self.gameMatch.terminate()
         self.myPoP.terminate()
 
     def run_blockchain(self):
@@ -49,11 +54,15 @@ class PlayerNode:
     def get_blockchain(self):
         print(self.myPoP.return_chain())
 
+    def get_chain_status(self):
+        print(self.myPoP.return_chain_status)
+
+    def get_current_match(self):
+        print(self.myPoP.return_current_matches)
+
     def run_match(self, thisMatchID, resultFile, dstipsFile):
         dstips = open(dstipsFile, 'r').readlines()
-        gameMatch = Process(target=Mapping(self.external_game_port + 1, self.game_port).run)
-        gameMatch.daemon = True
-        gameMatch.start()
+        
         clientProcesses = []
         for i in range(1):
             ip = dstips[i].replace(' ', ':')
@@ -70,16 +79,25 @@ class PlayerNode:
             gamePlyrList = sorted([item for key, item in plyrList.items()])
             gameResult = importGameResult(rawGameResult, gamePlyrList)
 
+            print("verify game!!! ")
             self.myPoP.verify_game(gameResult)
             res = self.myPoP.broadcast_gameRec()
             print(res)
 
+            print(self.nodeID, "terminated")
+
+            self.myPoP.terminate()
+            self.gameMatch.terminate()
+            self.gameMatch = Process(target=Mapping(self.external_game_port + 1, self.game_port).run)
+            self.gameMatch.daemon = True
+            self.gameMatch.start()
             return
         this_match()
 
         for process in clientProcesses:
             process.join()
-        gameMatch.terminate()
+        # time.sleep(10)
+        # gameMatch.terminate()
 
 if __name__ == "__main__":
     nodeID = "Player"
@@ -96,3 +114,7 @@ if __name__ == "__main__":
             player.run_match(command.split(' ')[1], command.split(' ')[2], command.split(' ')[3])
         if (command.split(' ')[0] == "get_blockchain"):
             player.get_blockchain()
+        if (command.split(' ')[0] == "get_chain_status"):
+            player.get_chain_status()
+        if (command.split(' ')[0] == "get_current_match"):
+            player.get_current_match()

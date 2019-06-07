@@ -4,7 +4,7 @@ import PoP
 import pickle
 import os
 
-def setup(nodeID, external_game_port=7777, game_port=1000, blockchain_port=1001, API_port=1002):
+def setup(nodeID, external_game_port=7777, game_port=1000, blockchain_port=1001, API_port=1002, SuperNode=None):
     # setupJSON needs to be defined if this is the first time the nodeID (user) initialize PoP
     setupJSON = {
         "nodeID": str(nodeID),
@@ -12,7 +12,7 @@ def setup(nodeID, external_game_port=7777, game_port=1000, blockchain_port=1001,
         "game_port": game_port,
         "blockchain_port": blockchain_port,
         "API_port": API_port,
-        "blockchain_bootstrap_ip": None,
+        "blockchain_bootstrap_ip": SuperNode,
         # not full parameters are configurated, default paramters will be intialized if it doesn't present in setupJSON
     }
     PoP.handler(nodeID=nodeID, winnerFunc=None, ratingFunc=None, setupJSON=setupJSON)
