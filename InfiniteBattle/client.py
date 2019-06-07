@@ -41,8 +41,9 @@ def run_match(nodeID, clientID, thisMatchID, resultFile, dstip):
         myPoP.verify_game(gameRec)
         # res = myPoP.broadcast_gameRec()
         # print(res)
-        time.sleep(10)
+        time.sleep(30)
 
+        print(setup_frame["nodeID"], "terminated! ")
         myPoP.terminate() # pop will only be terminated if this is ran, otherwise it freeze at the end of this function
         return
     my_match()
