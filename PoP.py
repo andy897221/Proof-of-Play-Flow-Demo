@@ -99,6 +99,11 @@ class handler:
     def return_current_matches(self):
         return pickle.loads(requests.get(f"http://127.0.0.1:{self.blockchain_port}/chain/matches").content)
 
+    def register_nodes(self, data):
+        # data format: a dictionary {pubkey:address}
+        requests.post(f'http://127.0.0.1:{self.blockchain_port}/matches/new', data=pickle.dumps(data))
+        return
+
     @staticmethod
     def return_myPubKey():
         return _blockchain.key.pubKey

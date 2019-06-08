@@ -74,7 +74,7 @@ class main:
 
         @app.route('/nodes/register', methods=['POST'])
         def register_nodes():
-            nodes = request.get_data()
+            nodes = pickle.loads(request.get_data())
             for pubKey in nodes:
                 self.blockchain.register_node(nodes, nodes[pubKey])
 
