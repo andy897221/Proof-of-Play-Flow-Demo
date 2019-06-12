@@ -77,7 +77,7 @@ def addBlockchainNodes(dstipsFile):
     for dst in dstips:
         ip, port = dst.split(' ')
         port = eval(port) + 1
-        nodes[str(random.randint())] = ip + ":" + str(port)
+        nodes[str(random.randint(1<<25, 1<<38))] = ip + ":" + str(port)
     
     myPoP.register_nodes(nodes)
 
