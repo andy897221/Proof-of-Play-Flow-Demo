@@ -1,5 +1,5 @@
 {
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw/xFtXzraJjN2jmldKUbxQdwHqNzdWOlBGU6S8+4od53+d4ucfuwhiRcAPsjRrYx4WmmXmPPJVAlPaxnkuqA25lkxwfrN6lKf8gJDu8BECkYeN8BzzINftJT8ctmfWb8q5n8Lnjiamsx5Br8NvKTSRt3mGowNNSUWurujh6brnziChcV355tY7J3/SzvrfVwRUwo0weFTZj2u6Vb5WyCaokxM+VQSY0pA4wY8IX+jdxlTia1nBArJR9BW27J8XUr7UOAkXM5R35lAzYUukrpTCEfo2rKv7ILb9yYNFboN0Zk3oRTqRl2ulCBKLUZZsjhLO5uq62+190Pyy35drD8XQIDAQAB": {
+  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwbx+CMYRxnM6PKaNAzGEr/s1eioPnrtZ6696cf708A7iNF4AT9DI7AkveW8UXpnzl7q1Wt6VnE0d/qz3LwLLLnQXYVC8Z35u0VKIPGlLxUpWw/we0iOwBP010ag6nAReE/CpYdlzPJ3fPD7dszvXCBlJPDTXErirexcYB0RIemv47w77mWv50j2/EiJQSCii6sdrPSSijZfCwDBFnX4Ts8ELq6C9UfCOZAo8BxGP4Vh3zFrVjDIdBkLlwBhznupGuZcg8cRKQlk8Ws+oepLhBHlqlqY4N2ylSDzQqVkuNLhilgz1TfIjAtSNfwO/MacPXKSeF32lebHq/Yi2EzPOFwIDAQAB": {
     "Role": "huangyueying",
     "Killed": 2,
     "Death": 0,
@@ -8,49 +8,13 @@
     "AmountOfBear": 110.0,
     "AmountOfRescue": 20.0
   },
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuR7d6ElHrg+wee3vKXsuYJ9NZauR/fsVDxJ9wCfYr+G0msb7WprUZOnQzAtp8lCL5i3rxqgMqt1/SsuFuDU2AzJ8GU0RictwTDssdctmvoPuLTYU5LquQJEivssLVkpty3HqnyqsvOxGaauvBAd89NkO0pxwG2o1jCdVsf/UMlZcWTU+A4F9knhMNPjAkcyHxub4F8H7LtKxeF4TAHZDlS1ysKLza44PauvC7X6pJCZe5Pc7CYX2Bytwlwv42rZ0BRZUCaYdO6rSBWIteNPm9rH2EJrFNby+PArB00nWIXjCointo87hLsF5sJF48bKe0OWiankj61Rt9VSmbiXgDQIDAQAB": {
+  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxHqBLS3mc7Fn2rjMrULNYuN+J+ngRwZNM511kwxtRVVsiKKn41T3Ev11umchNFKq4hoKTiK3OmH0CTKiYoFOxQbCOCNzCjWbmlAIT7KxCQBrLKVRPnyZfbIZ/XrDxl8HhQvNB3YIIWwsNwcvu/F2F8Br8AD/0EsHVZQHOd+ilG/vZXmMgmo21Mwk7+Wv+misR2WwKgk8xCc3AHRmxAjxcBBXu+T+iIKLDbLQ+Q/70B+QkdfZGnsJm+8kq07rQlAkEm4ulRpIP+N+H8AsJ2Z40jSoux0koTseii3v8WuHq24xz+lFciR6eLWhzlS/LYlFLWuRvy2lHatLEOy+0IbllwIDAQAB": {
     "Role": "caohong",
     "Killed": 0,
-    "Death": 0,
-    "IsWinner": true,
-    "AmountOfHarm": 20.0,
-    "AmountOfBear": 30.0,
-    "AmountOfRescue": 0.0
-  },
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo8/rWPOi4CwJD4XNqO5AmaeK9+3YlwnVB3h4yqPIARPK0fQsXCgo4lgQxI5nOhC9jHwzCqy7CQVxBMOTo/KfJQRGpAuHSXWQ6+XBSK41n2095BjdgD+NpoD5LOZq1Cnh8SqnV9DGFTTq+7559chiXkxvXyKX+2bZNQ5p+h45Ipiprt/SxSNoIRNC2C3Z3du8Kvh/EkLpyzREVuTqovNMz2MVK1etsyXDzycTD9sKBLik6ncNjkPT2fLg/EzhC2+Wq7NgGLNQ/s/bkd51rxpLU4exvCkEhnl28bMArGBGXfCMA9szh0f7Shf5V9+E9v0apezxuhqE5JYvGS4i+XRvywIDAQAB": {
-    "Role": "simayi",
-    "Killed": 1,
-    "Death": 0,
-    "IsWinner": true,
-    "AmountOfHarm": 185.0,
-    "AmountOfBear": 30.0,
-    "AmountOfRescue": 42.0
-  },
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsPQ+Vj+wUUpJSiltEaGFlFCoJbfcex4MQfvdl6uXA7H9KDlbTy6vFWzAFxqee+y4FuX+mH4A/z69yCOtUnXtKWnWK7LiWMjF/9mOLpU4B7q5NAQ+cFP4C43QHrNlNEqgLghY/4F+hryl7FsIp7axjklkI6MAhJiw6VHzgwehy2ZihfRqVHcL7AiH+ZZouE8kJnAzOayFJcV0sYa7TXUwxT2q21f5qALCbmv/OS6Hp9T//1RXzs05emldAl1RzdtUgbxSqlv5wUnXWsbUETJxoHo5tsdV8J0aa65ocZcXxzpGarpuh3SY0cRgHiTpDPWp10cz27OIGgwEwVZCnfY2lQIDAQAB": {
-    "Role": "lusu",
-    "Killed": 0,
-    "Death": 1,
+    "Death": 2,
     "IsWinner": false,
-    "AmountOfHarm": 150.0,
-    "AmountOfBear": 120.0,
-    "AmountOfRescue": 0.0
-  },
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlGJfZmtpBvjlCxO5GyMjqd5NdtvF9ojSQrsgv3mrA57lk5rlv4q6yuB3j1MYZslrI3n/u8SYO0GEhWw3UrMq447IkIamM0hQK5NZNYCXJLjE6ePtFs+t2EBBCVS8O2+P0f3fLVs7Xy1Pyn8Yf0QeICxG4AZkv076suMP1K1oy2Rg4ecCk2m8Gxxu1Rr1gNyWE5unN0Au33yDhBxS/9B9co8J2tajB/YO2i7Xh1Ho+tNoThrM62/DBFEkA6WPNYiNAHqLj/AFco41NwBNNPrIiFGVWCmtvknvSP8mlnYcmV0tQSPMTbC0ybNsYtfRAQtsqH6NCouJTzV4LvU6Vy+VyQIDAQAB": {
-    "Role": "diaochan",
-    "Killed": 0,
-    "Death": 1,
-    "IsWinner": false,
-    "AmountOfHarm": 0.0,
-    "AmountOfBear": 120.0,
-    "AmountOfRescue": 0.0
-  },
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArblqBS5NlYYzfBukEzrnO/i+YsqfWGGeoNVBfSvSJGgtAwwutgHQ4hNwbycAH8o41/jouz9VFtPODcOi7BGpPrwLkrx83kZ4CRxvF+mgjLsuS1vvijoefqR/9uMLRlGYMhLaLVrZE3t2wjyAJ1gTADWIKwMTItk539S5Rzo8kWAFq1a5jfIkF68mpczpSKLWZclxNmm5cKuXCipNolXaAWx+ij5ESDG72EypWbTS/z4Vx+hrZWj2Q+VBy7GQBtNgMdUget5Gaz+U50FdV3O+hGEgPWUV2e7QOWgLzPH1OTwFs/vLTpUw4XDcE4WyWgvzxFh6+GcvXYZTcsdAft9qdQIDAQAB": {
-    "Role": "xuchu",
-    "Killed": 0,
-    "Death": 1,
-    "IsWinner": false,
-    "AmountOfHarm": 20.0,
-    "AmountOfBear": 180.0,
-    "AmountOfRescue": 0.0
+    "AmountOfHarm": 110.0,
+    "AmountOfBear": 215.0,
+    "AmountOfRescue": 40.0
   }
 }
