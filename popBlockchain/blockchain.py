@@ -44,6 +44,7 @@ class Blockchain:
 
     def register_node(self, pubKey, addr):
         self.nodes[pubKey] = addr
+        if self.isSaving: self.saveState()
         return
 
     def proof_of_play(self,genesis=False):

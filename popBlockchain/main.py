@@ -78,8 +78,8 @@ class main:
             for pubKey in nodes:
                 self.blockchain.register_node(nodes, nodes[pubKey])
 
-            with open(self.config.knownNodesFile, 'w') as knownNode:
-                knownNode.write(json.dumps(self.blockchain.nodes))
+            # with open(self.config.knownNodesFile, 'w') as knownNode:
+            #     knownNode.write(json.dumps(self.blockchain.nodes))
 
             response = {
                 'message': 'New nodes have been added',

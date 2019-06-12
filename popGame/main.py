@@ -26,6 +26,7 @@ class plyrData:
             for senderPID in plyrData.plyrsSignRes:
                 signature[plyrData.plyrsPubK[receiverPID]][plyrData.plyrsPubK[senderPID]] =\
                     plyrData.plyrsSignRes[receiverPID][senderPID]
+        return signature
 
 from popGame.sock import *
 from popGame.config import *

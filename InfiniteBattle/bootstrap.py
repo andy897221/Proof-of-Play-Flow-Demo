@@ -8,6 +8,7 @@ from mapping import Mapping
 import json
 import client
 import setup
+import random
 
 nodeID = None
 myPoP = None
@@ -27,7 +28,6 @@ def start(name):
     terminate()
     nodeID = name
     myPoP = PoP.handler(nodeID=nodeID, winnerFunc=getMVP, ratingFunc=getRating)
-    print(myPoP)
     EndChain = False
 
     @myPoP.run_blockchain(saveState=False, auto_broadcast=True)
@@ -55,7 +55,7 @@ def terminate():
     global EndChain
     blockchainMapping.terminate()
     EndChain = True
-    time.sleep(5)
+    # time.sleep(5)
 
 def createClients(thisMatchID, resultFile, dstipsFile):
     dstips = open(dstipsFile, 'r').readlines()
@@ -70,10 +70,22 @@ def createClients(thisMatchID, resultFile, dstipsFile):
     
     return clientProcesses
 
+def addBlockchainNodes(dstipsFile):
+    dstips = open(dstipsFile, 'r').readlines()
+    nodes = dict()
+    
+    for dst in dstips:
+        ip, port = dst.split(' ')
+        port = eval(port) + 1
+        nodes[str(random.randint())] = ip + ":" + str(port)
+    
+    myPoP.register_nodes(nodes)
+
 def run_match(thisMatchID, resultFile, dstipsFile):
     @myPoP.run_conn(matchID=thisMatchID)
     def this_match():
         clientProcesses = createClients(thisMatchID, resultFile, dstipsFile)
+        addBlockchainNodes(dstipsFile)
         external_game_port, game_port, _ = get_port()
         gameMatch = Process(target=Mapping(external_game_port + 1, game_port).run)
         gameMatch.daemon = True
@@ -81,11 +93,11 @@ def run_match(thisMatchID, resultFile, dstipsFile):
         
         while len(myPoP.return_plyrList()) < 2: time.sleep(1)
         plyrList = myPoP.return_plyrList()
+        #print(plyrList)
         with open(resultFile, 'r') as f: rawGameResult = f.read()
         gamePlyrList = sorted([item for key, item in plyrList.items()])
         gameResult = importGameResult(rawGameResult, gamePlyrList)
 
-        print("verify game!!! ")
         myPoP.verify_game(gameResult)
         res = myPoP.broadcast_gameRec()
         print(res)

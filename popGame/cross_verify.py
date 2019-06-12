@@ -21,7 +21,8 @@ class cross_verify:
         # check if every signed is valid
         for receiverPID in self.plyrData.gamePlyrs:
             for senderPID in self.plyrData.gamePlyrs:
-                gameResHash = SHA256.new(self.plyrData.plyrsRes[receiverPID])
+                gameResult = pickle.dumps(pickle.loads(self.plyrData.plyrsRes[receiverPID]).matchData)
+                gameResHash = SHA256.new(gameResult)
                 if gameResHash.hexdigest() != self.plyrData.plyrsResHash[senderPID][receiverPID].hexdigest():
                     return False
                 try:
@@ -59,8 +60,9 @@ class cross_verify:
         if self.myConf.ID not in self.plyrData.plyrsResHash: self.plyrData.plyrsResHash[self.myConf.ID] = {}
 
         self.plyrData.plyrsRes[self.myConf.ID] = pickle.dumps(records)
-        gameResRehash = rehash.sha256(self.plyrData.plyrsRes[self.myConf.ID])
-        gameResHash = SHA256.new(self.plyrData.plyrsRes[self.myConf.ID])
+        matchData = pickle.dumps(records.matchData)
+        gameResRehash = rehash.sha256(matchData)
+        gameResHash = SHA256.new(matchData)
         signedGameResHash = pkcs1_15.new(RSA.import_key(self.key.priKey)).sign(gameResHash)
         self.plyrData.plyrsSignRes[self.myConf.ID][self.myConf.ID] = signedGameResHash
         self.plyrData.plyrsResHash[self.myConf.ID][self.myConf.ID] = gameResHash
