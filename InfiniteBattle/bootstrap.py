@@ -56,7 +56,7 @@ def terminate():
     global EndChain
     blockchainMapping.terminate()
     EndChain = True
-    time.sleep(5)
+    # time.sleep(5)
 
 def createClients(thisMatchID, resultFile, dstipsFile):
     dstips = open(dstipsFile, 'r').readlines()

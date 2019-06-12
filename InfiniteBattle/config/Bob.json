@@ -1,0 +1,1 @@
+{"nodeID": "Bob", "external_game_port": 8888, "game_port": 2000, "blockchain_port": 2001, "API_port": 2002, "blockchain_bootstrap_ip": null, "keyLoc": "./config/nodeKey", "blockchainLoc": "./config/blockchain"}
