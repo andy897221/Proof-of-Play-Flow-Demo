@@ -101,7 +101,8 @@ class handler:
 
     def register_nodes(self, data):
         # data format: a dictionary {pubkey:address}
-        requests.post(f'http://127.0.0.1:{self.blockchain_port}/matches/new', data=pickle.dumps(data))
+        # print(data)
+        requests.post(f'http://127.0.0.1:{self.blockchain_port}/nodes/register', data=pickle.dumps(data))
         return
 
     @staticmethod

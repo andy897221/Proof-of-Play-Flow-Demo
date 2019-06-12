@@ -125,8 +125,8 @@ def get_current_match():
     print(myPoP.return_current_matches())
 
 if __name__ == "__main__":
-    name = "Player"
-    setup.setup(name)
+    name = "Alice"
+    setup.setup(name, 7777, 1000, 1001, 1002)
     setup.createGenesis()
     start(name)
     while True:

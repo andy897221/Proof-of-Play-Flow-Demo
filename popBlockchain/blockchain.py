@@ -43,7 +43,9 @@ class Blockchain:
         if self.isSaving: self.saveState()
 
     def register_node(self, pubKey, addr):
+        # print(pubKey, addr)
         self.nodes[pubKey] = addr
+        if self.isSaving: self.saveState()
         return
 
     def proof_of_play(self,genesis=False):
@@ -63,6 +65,7 @@ class Blockchain:
 
     @staticmethod
     def valid_match(match):
+        # print(match)
         signature = match['signature']
         matchData = match['matchData']
         for senderPubKey in signature:

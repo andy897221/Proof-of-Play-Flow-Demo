@@ -76,10 +76,10 @@ class main:
         def register_nodes():
             nodes = pickle.loads(request.get_data())
             for pubKey in nodes:
-                self.blockchain.register_node(nodes, nodes[pubKey])
+                self.blockchain.register_node(pubKey, nodes[pubKey])
 
-            with open(self.config.knownNodesFile, 'w') as knownNode:
-                knownNode.write(json.dumps(self.blockchain.nodes))
+            # with open(self.config.knownNodesFile, 'w') as knownNode:
+            #     knownNode.write(json.dumps(self.blockchain.nodes))
 
             response = {
                 'message': 'New nodes have been added',

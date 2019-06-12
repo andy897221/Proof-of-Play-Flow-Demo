@@ -20,12 +20,14 @@ class plyrData:
 
     @staticmethod
     def return_signature():
+        # print("plyrPubKLink:", plyrData.plyrsPubK)
         signature = {}
         for receiverPID in plyrData.plyrsSignRes:
             signature[plyrData.plyrsPubK[receiverPID]] = {}
             for senderPID in plyrData.plyrsSignRes:
                 signature[plyrData.plyrsPubK[receiverPID]][plyrData.plyrsPubK[senderPID]] =\
                     plyrData.plyrsSignRes[receiverPID][senderPID]
+        return signature
 
 from popGame.sock import *
 from popGame.config import *
