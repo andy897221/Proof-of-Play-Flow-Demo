@@ -4,6 +4,8 @@ from threading import Thread
 import requests
 from io import BytesIO
 from flask import Flask, request, send_file
+import socket
+import time
 
 class plyrData:
     gamePlyrs = []  # list of player p2p node id with same game match id
@@ -55,9 +57,10 @@ class main:
     def setup_app(self):
         try:
             self.sk.sock = mesh.MeshSocket('0.0.0.0', int(self.myConf.port))
-        except OSError:
+        except OSError as err:
             print("IP and Port pair has already existed")
-            sys.exit()
+            print("error:", str(err))
+            # sys.exit()
 
         print("socket established, ready for connection.")
         time.sleep(1)
@@ -82,7 +85,12 @@ class main:
             bootstrap = content["bootstrap"]  # bootstrap addr string
 
             print(f"Trying to connect to {bootstrap}")
-            self.sk.sock.connect(bootstrap.split(":")[0], int(bootstrap.split(":")[1]))
+            try:
+                self.sk.sock.connect(bootstrap.split(":")[0], int(bootstrap.split(":")[1]))
+            except Exception:
+                print("Connection timeout. ")
+                return "connection failed.", 408
+            
             time.sleep(1)
             handshakingMsg = {"handshaking": 1, "matchID": self.gameConf.matchID, "pubKey": pickle.dumps(key.pubKey)}
             print("Handshaking with mesh network... match ID: " + str(handshakingMsg["matchID"]))
@@ -133,6 +141,18 @@ class main:
         def test():
             print(request.data)
             return "received data", 200
+
+        @app.route('/shutdown', methods=['POST'])
+        def shutdown():
+            time.sleep(5)
+            func = request.environ.get('werkzeug.server.shutdown')
+            if func is None:
+                raise RuntimeError('Not running with the Werzeug Server')
+            func()
+            self.gameConf.matchCompleted = True
+            self.sk.sock.close()
+            print("terminating current flask app... ")
+            return 'Server shutting down', 200
 
         app.run(host='0.0.0.0', port=self.myConf.APIPort)
 

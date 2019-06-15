@@ -6,11 +6,13 @@ import time
 def server(*settings):
     try:
         dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         dock_socket.bind(('', settings[0]))
         dock_socket.listen(5)
         while True:
             client_socket = dock_socket.accept()[0]
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             server_socket.connect((settings[1], settings[2]))
             thread.start_new_thread(forward, (client_socket, server_socket))
             thread.start_new_thread(forward, (server_socket, client_socket))

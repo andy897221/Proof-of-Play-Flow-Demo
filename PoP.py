@@ -12,7 +12,11 @@ class handler:
         from_path = path(sys.argv[0])
 
         if os.path.isfile(f'{from_path}/config/{nodeID}.json'):
-            print(f"{nodeID} config file found.")
+            if setupJSON is None:
+                print(f"{nodeID} config file found.")
+            else:
+                print(f"{nodeID} config file needs updating.")
+                _init.init(nodeID=nodeID, from_path=from_path, setupJSON=setupJSON)
         else:
             print(f"{nodeID} config file not found, runnig initialization process...")
             _init.init(nodeID=nodeID, from_path=from_path, setupJSON=setupJSON)
@@ -61,7 +65,7 @@ class handler:
     def game_conn_to(self, bootstrap_addr):
         # bootstrap_addr: the node to connect to retrieve other nodes, None if you are the bootstrap
         return requests.post(f"http://127.0.0.1:{self.api_port}/conn",
-                      json={'bootstrap': bootstrap_addr}).text
+                      json={'bootstrap': bootstrap_addr}).status_code
 
     def verify_game(self, gameRec):
         # how do I receive the result? can I make this a promise?
@@ -111,3 +115,8 @@ class handler:
 
     def terminate(self):
         raise SystemExit
+    
+    def terminate_game(self):
+        requests.post(f"http://127.0.0.1:{self.api_port}/shutdown")
+        raise SystemExit
+        return 

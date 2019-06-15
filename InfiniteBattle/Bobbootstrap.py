@@ -28,7 +28,7 @@ def start(name):
     terminate()
     nodeID = name
     myPoP = PoP.handler(nodeID=nodeID, winnerFunc=getMVP, ratingFunc=getRating)
-    # print(myPoP)
+    print(myPoP)
     EndChain = False
 
     @myPoP.run_blockchain(saveState=False, auto_broadcast=True)
@@ -71,7 +71,7 @@ def createClients(thisMatchID, resultFile, dstipsFile):
     
     return clientProcesses
 
-def addBlockchainNodes(dstipsFile):
+def addBlockchainNodes(myPoP, dstipsFile):
     dstips = open(dstipsFile, 'r').readlines()
     nodes = dict()
     
@@ -82,15 +82,20 @@ def addBlockchainNodes(dstipsFile):
     
     myPoP.register_nodes(nodes)
 
-def run_match(thisMatchID, resultFile, dstipsFile):
+def run_match(myPoP, nid, thisMatchID, resultFile, dstipsFile):
+    print(myPoP)
+    print("run")
+    global nodeID
+    nodeID = nid
     @myPoP.run_conn(matchID=thisMatchID)
     def this_match():
         clientProcesses = createClients(thisMatchID, resultFile, dstipsFile)
-        addBlockchainNodes(dstipsFile)
+        addBlockchainNodes(myPoP, dstipsFile)
         external_game_port, game_port, _ = get_port()
         gameMatch = Process(target=Mapping(external_game_port + 1, game_port).run)
         gameMatch.daemon = True
         gameMatch.start()
+        print("configuration done")
         
         while len(myPoP.return_plyrList()) < 2: time.sleep(1)
         plyrList = myPoP.return_plyrList()
@@ -108,7 +113,7 @@ def run_match(thisMatchID, resultFile, dstipsFile):
         print(nodeID, "terminated")
 
         gameMatch.terminate()
-        myPoP.terminate()
+        myPoP.terminate_game()
         for process in clientProcesses:
             process.join()
 
@@ -131,11 +136,15 @@ if __name__ == "__main__":
     start(name)
     while True:
         command = input(">>> ")
+        print("MyPoP:", myPoP)
         if (command.split(' ')[0] == "exit"):
             terminate()
             exit(0)
         if (command.split(' ')[0] == "run_match"):
-            run_match(command.split(' ')[1], command.split(' ')[2], command.split(' ')[3])
+            # run_match(command.split(' ')[1], command.split(' ')[2], command.split(' ')[3])
+            gameMatch = Process(target=run_match, args=(myPoP, name, command.split(' ')[1], command.split(' ')[2], command.split(' ')[3], ))
+            # gameMatch.daemon = True
+            gameMatch.start()
         if (command.split(' ')[0] == "get_blockchain"):
             get_blockchain()
         if (command.split(' ')[0] == "get_chain_status"):

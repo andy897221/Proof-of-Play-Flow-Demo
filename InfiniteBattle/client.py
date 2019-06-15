@@ -29,8 +29,9 @@ def run_match(nodeID, clientID, thisMatchID, resultFile, dstip):
         ########## API entry and p2p entry threads are running, you can execute any code here ##########
 
         # create a two player pop match
-        time.sleep(5)
-        myPoP.game_conn_to(dstip) # connect to bootstrap node
+        # time.sleep(5)
+        # print(myPoP.game_conn_to(dstip)) # connect to bootstrap node
+        while(myPoP.game_conn_to(dstip) != 200): continue
 
         plyrList = myPoP.return_plyrList()
         
@@ -44,7 +45,7 @@ def run_match(nodeID, clientID, thisMatchID, resultFile, dstip):
         # time.sleep(30)
 
         print(setup_frame["nodeID"], "terminated! ")
-        myPoP.terminate() # pop will only be terminated if this is ran, otherwise it freeze at the end of this function
+        myPoP.terminate_game() # pop will only be terminated if this is ran, otherwise it freeze at the end of this function
         return
     my_match()
 
