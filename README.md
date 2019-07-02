@@ -1,6 +1,13 @@
 # Proof-of-Play: A Novel Consensus Model forBlockchain-based Peer-to-Peer Gaming System
 this is an experimental library used as a demo of the idea of Proof-of-Play
 
+## Background
+Codes of the paper (BSCI 2019, Workshop under ASIACCS 2019):
+
+**Proof-of-Play: A Novel Consensus Model for Blockchain-based Peer-to-Peer Gaming System**, 
+
+**Ho Yin Yuen (The Hong Kong Polytechnic University, China)**; Feijie Wu (The Hong Kong Polytechnic University, China); Wei Cai (The Chinese University of Hong Kong, Shenzhen, China); Henry C.B. Chan (The Hong Kong Polytechnic University, China); Qiao Yan (Shenzhen University, China); Victor C.M. Leung (Shenzhen University, China)
+
 ## Installation
 There is dependence has to be taken care of before using the library:
 * Flask
